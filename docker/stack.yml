@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  hotlinkstuff:
+    image: ghcr.io/jbkunama1/hai-hotlinkstuff:latest
+    container_name: hai-hotlinkstuff
+    restart: unless-stopped
+    ports:
+      - "8095:80"
+    environment:
+      APP_PASSWORD: ${APP_PASSWORD}
+    volumes:
+      - /data:/var/www/data
