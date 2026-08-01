@@ -4,42 +4,342 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>hAI.HotLinkStuff</title>
-  <link rel="stylesheet" href="./assets/app.css" />
+  <meta name="description" content="HotStuff und PromptSave in einer Oberfläche mit zentralem Login." />
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: rgba(255,255,255,0.92);
+      --surface-2: #eef2f7;
+      --text: #142338;
+      --muted: #64748b;
+      --border: #d9e2ec;
+      --accent: #0f766e;
+      --accent-2: #ea580c;
+      --accent-3: #0ea5e9;
+      --shadow: 0 18px 40px rgba(19, 34, 56, 0.12);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(234,88,12,0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.16), transparent 38%),
+        linear-gradient(180deg, #ffffff 0%, #f6f7fb 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 18px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    header {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent), var(--accent-3));
+      color: #fff;
+      font-size: 24px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    .brand p {
+      margin: 3px 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .hamburger {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      width: 16px;
+      height: 2px;
+      border-radius: 999px;
+      background: #334155;
+      margin: 2px 0;
+    }
+    .hamburger:hover {
+      background: #e2e8f0;
+    }
+    .shell {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      min-height: 0;
+    }
+    .main-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .subhead {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .subhead h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .subhead p {
+      margin: 2px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .pill-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      border-color: transparent;
+      color: #fff;
+    }
+    .pill span.icon {
+      font-size: 1.1rem;
+    }
+    .frame-wrap {
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.45);
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 20px;
+      z-index: 1000;
+    }
+    .menu-overlay.show {
+      display: flex;
+    }
+    .menu-card {
+      width: 260px;
+      background: var(--surface);
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+    .menu-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+    .menu-link {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .menu-link span.icon {
+      font-size: 1.1rem;
+    }
+    .menu-link.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      border-color: transparent;
+      color: #fff;
+    }
+    .footer-note {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: right;
+      padding: 0 4px;
+    }
+    @media (max-width: 860px) {
+      .layout {
+        padding: 14px 12px 22px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header class="app-header">
-    <div class="brand-wrap">
-      <div class="brand-mark">🔥🧠</div>
-      <div>
-        <h1>hAI.HotLinkStuff</h1>
-        <p>HotStuff + PromptSave in einer App</p>
+  <div class="layout">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">🔥🧠</div>
+        <div>
+          <h1>hAI.HotLinkStuff</h1>
+          <p>HotStuff & PromptSave mit zentralem Login</p>
+        </div>
       </div>
-    </div>
-
-    <div class="header-actions">
-      <button class="nav-btn active" data-tab="hotstuff">🔥 HotStuff</button>
-      <button class="nav-btn" data-tab="promptsave">🧠 PromptSave</button>
-    </div>
-  </header>
-
-  <main class="app-main">
-    <section id="panel-hotstuff" class="tab-panel active">
-      <div class="panel-head">
-        <h2>HotStuff</h2>
-        <p>Links, Bilder und Textbausteine verwalten.</p>
+      <div class="hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
       </div>
-      <iframe src="./modules/hotstuff.html" title="HotStuff" loading="eager"></iframe>
+    </header>
+
+    <section class="shell">
+      <article class="main-card">
+        <div class="subhead">
+          <div>
+            <h2 id="viewTitle">HotStuff</h2>
+            <p id="viewSubtitle">Links, Bilder und Textbausteine verwalten.</p>
+          </div>
+          <div class="pill-tabs">
+            <button class="pill active" data-view="hotstuff">
+              <span class="icon">🔥</span>
+              HotStuff
+            </button>
+            <button class="pill" data-view="promptsave">
+              <span class="icon">🧠</span>
+              PromptSave
+            </button>
+          </div>
+        </div>
+        <div class="frame-wrap">
+          <iframe id="contentFrame" src="modules/hotstuff.html" title="HotStuff"></iframe>
+        </div>
+        <div class="footer-note">
+          Passwort wird zentral per Login gesetzt und als Cookie in den Modulen verwendet.
+        </div>
+      </article>
     </section>
+  </div>
 
-    <section id="panel-promptsave" class="tab-panel">
-      <div class="panel-head">
-        <h2>PromptSave</h2>
-        <p>Prompts sammeln, bearbeiten, importieren und exportieren.</p>
-      </div>
-      <iframe src="./modules/promptsave.html" title="PromptSave" loading="lazy"></iframe>
-    </section>
-  </main>
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-card">
+      <h3>Module wählen</h3>
+      <button class="menu-link active" data-view="hotstuff">
+        <span class="icon">🔥</span>
+        HotStuff – Material & Links
+      </button>
+      <button class="menu-link" data-view="promptsave">
+        <span class="icon">🧠</span>
+        PromptSave – Prompts
+      </button>
+    </div>
+  </div>
 
-  <script src="./assets/app.js" defer></script>
+  <script>
+    const frame = document.getElementById('contentFrame');
+    const viewTitle = document.getElementById('viewTitle');
+    const viewSubtitle = document.getElementById('viewSubtitle');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    const pillButtons = Array.from(document.querySelectorAll('.pill'));
+    const menuLinks = Array.from(document.querySelectorAll('.menu-link'));
+
+    function setView(view) {
+      if (view === 'hotstuff') {
+        frame.src = 'modules/hotstuff.html';
+        frame.title = 'HotStuff';
+        viewTitle.textContent = 'HotStuff';
+        viewSubtitle.textContent = 'Links, Bilder und Textbausteine verwalten.';
+      } else {
+        frame.src = 'modules/promptsave.html';
+        frame.title = 'PromptSave';
+        viewTitle.textContent = 'PromptSave';
+        viewSubtitle.textContent = 'Prompts sammeln, bearbeiten, importieren und exportieren.';
+      }
+
+      pillButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+      });
+      menuLinks.forEach(link => {
+        link.classList.toggle('active', link.dataset.view === view);
+      });
+    }
+
+    pillButtons.forEach(btn => {
+      btn.addEventListener('click', () => setView(btn.dataset.view));
+    });
+
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        setView(link.dataset.view);
+        menuOverlay.classList.remove('show');
+      });
+    });
+
+    hamburgerBtn.addEventListener('click', () => {
+      menuOverlay.classList.toggle('show');
+    });
+
+    menuOverlay.addEventListener('click', e => {
+      if (e.target === menuOverlay) {
+        menuOverlay.classList.remove('show');
+      }
+    });
+
+    // Startansicht: HotStuff
+    setView('hotstuff');
+  </script>
 </body>
 </html>
