@@ -9,13 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     if (hash_equals($correctPassword, $password)) {
         $_SESSION['hotlinkstuff_authenticated'] = true;
-        // Passwort für JS-Frontend bereitstellen
+
         setcookie('hotlinkstuff_pw', $password, [
             'path' => '/',
             'httponly' => false,
             'secure' => false,
             'samesite' => 'Lax',
         ]);
+
         header('Location: /app/index.html');
         exit;
     } else {
