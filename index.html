@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hAI.HotLinkStuff</title>
+  <link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-wrap">
+      <div class="brand-mark">🔥🧠</div>
+      <div>
+        <h1>hAI.HotLinkStuff</h1>
+        <p>HotStuff + PromptSave in einer App</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="nav-btn active" data-tab="hotstuff">🔥 HotStuff</button>
+      <button class="nav-btn" data-tab="promptsave">🧠 PromptSave</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section id="panel-hotstuff" class="tab-panel active">
+      <div class="panel-head">
+        <h2>HotStuff</h2>
+        <p>Links, Bilder und Textbausteine verwalten.</p>
+      </div>
+      <iframe src="./modules/hotstuff.html" title="HotStuff" loading="eager"></iframe>
+    </section>
+
+    <section id="panel-promptsave" class="tab-panel">
+      <div class="panel-head">
+        <h2>PromptSave</h2>
+        <p>Prompts sammeln, bearbeiten, importieren und exportieren.</p>
+      </div>
+      <iframe src="./modules/promptsave.html" title="PromptSave" loading="lazy"></iframe>
+    </section>
+  </main>
+
+  <script src="./assets/app.js" defer></script>
+</body>
+</html>

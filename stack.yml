@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  hotlinkstuff:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: hai-hotlinkstuff
+    restart: unless-stopped
+    ports:
+      - "8095:80"
+    environment:
+      APP_PASSWORD: ${APP_PASSWORD:-hotstuff}
+    volumes:
+      - ../data:/var/www/data
