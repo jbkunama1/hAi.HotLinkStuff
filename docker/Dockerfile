@@ -14,6 +14,7 @@ RUN a2enmod rewrite \
 
 WORKDIR /var/www/html
 COPY app/ /var/www/html/app/
+COPY app/index.php /var/www/html/index.php
 
 RUN mkdir -p /var/www/data \
     && chown -R www-data:www-data /var/www/data /var/www/html
