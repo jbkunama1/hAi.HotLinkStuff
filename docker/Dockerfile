@@ -13,7 +13,7 @@ RUN a2enmod rewrite \
     && echo 'DirectoryIndex index.html index.php' >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
-COPY app/ /var/www/html/
+COPY app/ /var/www/html/app/
 
 RUN mkdir -p /var/www/data \
     && chown -R www-data:www-data /var/www/data /var/www/html
