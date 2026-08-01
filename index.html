@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hAI.HotLinkStuff</title>
+  <meta name="description" content="hAI.HotLinkStuff vereint HotStuff und PromptSave in einem Projekt für Links, Bilder, Textbausteine und Prompts." />
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: rgba(255,255,255,0.88);
+      --text: #132238;
+      --muted: #64748b;
+      --border: #dbe3ea;
+      --accent: #0f766e;
+      --accent-2: #ea580c;
+      --accent-3: #0ea5e9;
+      --shadow: 0 18px 50px rgba(19, 34, 56, 0.10);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(234,88,12,0.14), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.16), transparent 35%),
+        linear-gradient(180deg, #ffffff 0%, #f6f7fb 100%);
+    }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+    .topbar {
+      display: flex; justify-content: space-between; align-items: center; gap: 18px;
+      padding: 18px 22px; border: 1px solid var(--border); border-radius: 22px;
+      background: var(--surface); backdrop-filter: blur(12px); box-shadow: var(--shadow);
+    }
+    .brand { display: flex; gap: 14px; align-items: center; }
+    .brand-mark {
+      width: 58px; height: 58px; border-radius: 18px; display: grid; place-items: center;
+      font-size: 26px; color: white;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent), var(--accent-3));
+    }
+    h1,h2,h3,p { margin: 0; }
+    .hero {
+      margin-top: 26px;
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 22px;
+      align-items: stretch;
+    }
+    .hero-card, .panel, .feature, .code, .footer-card {
+      border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+      backdrop-filter: blur(12px); box-shadow: var(--shadow);
+    }
+    .hero-card { padding: 34px; }
+    .eyebrow {
+      display: inline-flex; gap: 8px; align-items: center; padding: 8px 12px;
+      border-radius: 999px; background: #eef7f6; color: var(--accent); font-weight: 700; font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+    .hero h2 { font-size: clamp(2rem, 4vw, 4rem); line-height: 1.02; margin-bottom: 14px; }
+    .hero p { color: var(--muted); font-size: 1.08rem; line-height: 1.65; max-width: 60ch; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 13px 18px; border-radius: 999px; text-decoration: none; font-weight: 700;
+      border: 1px solid var(--border); transition: 0.2s ease;
+    }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: #fff; border: none; }
+    .btn.secondary { background: #fff; color: var(--text); }
+    .btn:hover { transform: translateY(-1px); }
+    .hero-side { display: grid; gap: 18px; }
+    .panel { padding: 24px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+    .stat {
+      padding: 16px; border-radius: 18px; background: #fff; border: 1px solid var(--border);
+    }
+    .stat strong { display: block; font-size: 1.5rem; margin-bottom: 6px; }
+    .section { margin-top: 26px; }
+    .section-head { margin-bottom: 16px; }
+    .section-head p { color: var(--muted); margin-top: 8px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .feature { padding: 22px; }
+    .feature .icon {
+      width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center;
+      background: #f1f5f9; font-size: 22px; margin-bottom: 14px;
+    }
+    .feature p { color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .code { padding: 24px; overflow: auto; }
+    pre { margin: 0; font-size: 0.95rem; line-height: 1.6; }
+    .footer-card { margin-top: 28px; padding: 24px; text-align: center; }
+    .footer-card p { color: var(--muted); margin-top: 8px; }
+    .mini-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; justify-content: center; }
+    .mini-badges span {
+      padding: 8px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--border); font-weight: 600;
+    }
+    @media (max-width: 980px) {
+      .hero, .feature-grid { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🔥🧠</div>
+        <div>
+          <h1>hAI.HotLinkStuff</h1>
+          <p>HotStuff + PromptSave in einem gemeinsamen Projekt</p>
+        </div>
+      </div>
+      <a class="btn secondary" href="https://github.com/jbkunama1/hAi.HotLinkStuff" target="_blank" rel="noopener noreferrer">Zum GitHub-Repo</a>
+    </header>
+
+    <section class="hero">
+      <article class="hero-card">
+        <div class="eyebrow">🚀 Lehrer-Tool · Selfhosted · SQLite</div>
+        <h2>Links, Bilder, Textbausteine und Prompts unter einem Dach.</h2>
+        <p>
+          hAI.HotLinkStuff kombiniert zwei bestehende Apps in einer gemeinsamen Oberfläche: HotStuff für Materialsammlung und PromptSave für Prompt-Verwaltung.
+          Die Daten bleiben dabei sauber getrennt in zwei SQLite-Datenbanken, sodass bestehende Inhalte einfach übernommen werden können.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="https://github.com/jbkunama1/hAi.HotLinkStuff" target="_blank" rel="noopener noreferrer">📦 Repo öffnen</a>
+          <a class="btn secondary" href="./README.md" target="_blank" rel="noopener noreferrer">📘 README ansehen</a>
+        </div>
+      </article>
+
+      <aside class="hero-side">
+        <div class="panel">
+          <h3>Projekt-Setup</h3>
+          <div class="stat-grid">
+            <div class="stat"><strong>2</strong><span>Module</span></div>
+            <div class="stat"><strong>2</strong><span>SQLite-DBs</span></div>
+            <div class="stat"><strong>PHP</strong><span>Backend</span></div>
+            <div class="stat"><strong>Docker</strong><span>Deployment</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Module</h3>
+          <p style="margin-top:10px;color:var(--muted);line-height:1.7;">
+            🔥 <strong>HotStuff</strong> für Text, Bilder und Links.<br>
+            🧠 <strong>PromptSave</strong> für strukturierte Prompts mit CSV-Import und Export.
+          </p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Funktionen</h2>
+        <p>Die Plattform ist für ein pragmatisches Selfhosted-Setup gedacht und passt gut zu Docker-, Portainer- und SQLite-Workflows.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature">
+          <div class="icon">🔥</div>
+          <h3>HotStuff</h3>
+          <p>Sammlung für Links, Bilder, Unterrichtsideen, Anleitungen und Textbausteine mit Suche, Filterung und Bearbeitung.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">🧠</div>
+          <h3>PromptSave</h3>
+          <p>Prompt-Verwaltung mit Kategorien, Bearbeitung, Copy-to-Clipboard und CSV-Import/-Export für schnelle Sicherung und Wiederverwendung.</p>
+        </article>
+        <article class="feature">
+          <div class="icon">🐳</div>
+          <h3>Deployment</h3>
+          <p>Ausgelegt für Deployment per GitHub-Repo und Portainer-Stack mit zwei gemounteten SQLite-Dateien im Datenverzeichnis.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Projektstruktur</h2>
+        <p>Die App trennt Shell, Module, API und Datenverzeichnis sauber voneinander.</p>
+      </div>
+      <div class="code">
+<pre>hAI.HotLinkStuff/
+├── app/
+│   ├── index.html
+│   ├── api.php
+│   ├── modules/
+│   │   ├── hotstuff.html
+│   │   └── promptsave.html
+│   └── assets/
+├── data/
+│   ├── heisser-scheiss.db
+│   └── prompts.db
+├── docker/
+│   ├── Dockerfile
+│   └── stack.yml
+└── README.md</pre>
+      </div>
+    </section>
+
+    <section class="footer-card">
+      <h2>Bereit für GitHub + Portainer</h2>
+      <p>Das Repo liefert die App-Struktur, die API, die Module, die README und eine GitHub-Pages-Landingpage für die Projektpräsentation.</p>
+      <div class="mini-badges">
+        <span>PHP</span>
+        <span>SQLite</span>
+        <span>Vanilla JS</span>
+        <span>Docker</span>
+        <span>Portainer</span>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
