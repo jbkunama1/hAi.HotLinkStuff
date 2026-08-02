@@ -1,0 +1,334 @@
+/* Basis-Theme – angelehnt an deine Login-Seite (Dark) */
+
+:root {
+  --bg: #020617;
+  --surface: #0b1120;
+  --surface-2: #020617;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --border: #1f2937;
+  --accent: #0f766e;
+  --accent2: #ea580c;
+  --accent3: #0ea5e9;
+  --radius: 22px;
+  --shadow-strong: 0 20px 50px rgba(15, 23, 42, 0.65);
+  --shadow-soft: 0 14px 32px rgba(15, 23, 42, 0.45);
+}
+
+/* Global */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(234, 88, 12, 0.35), transparent 54%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.35), transparent 54%),
+    linear-gradient(180deg, #020617 0%, #0b1120 70%, #020617 100%);
+  color: var(--text);
+}
+
+/* Shell-Layout (app/index.html) */
+
+.shell-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 18px 14px 24px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.shell-header {
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-strong);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shell-brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.shell-brand-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+  color: #fff;
+  font-size: 26px;
+}
+
+.shell-brand-title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.shell-brand-subtitle {
+  margin: 3px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.shell-hamburger {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.shell-hamburger span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: #cbd5f5;
+  margin: 2px 0;
+}
+
+.shell-hamburger:hover {
+  background: #111827;
+}
+
+.shell-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.shell-card {
+  background: var(--surface);
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shell-subhead {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.shell-subhead-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.shell-subhead-text {
+  margin: 3px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.shell-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shell-tab-pill {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shell-tab-pill span.icon {
+  font-size: 1.1rem;
+}
+
+.shell-tab-pill.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  border-color: transparent;
+  color: #fff;
+}
+
+.shell-frame-wrap {
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--border);
+  background: #020617;
+}
+
+.shell-frame-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Menü-Overlay */
+
+.shell-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: none;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.shell-menu-overlay.show {
+  display: flex;
+}
+
+.shell-menu-card {
+  width: 260px;
+  background: var(--surface);
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-strong);
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.shell-menu-card h3 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+}
+
+.shell-menu-link {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #020617;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.shell-menu-link span.icon {
+  font-size: 1.1rem;
+}
+
+.shell-menu-link.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  border-color: transparent;
+  color: #fff;
+}
+
+.shell-footer-note {
+  margin: 6px 12px 10px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* Modul-Ansicht-Styling (Akzentwechsel) */
+
+body.view-hotstuff .shell-brand-mark {
+  background: linear-gradient(135deg, #ea580c, #0f766e);
+}
+
+body.view-promptsave .shell-brand-mark {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+}
+
+/* Breakpoints – Mobile-first */
+
+// Basis ist mobile: alles zentriert, kompakt
+
+.shell-layout {
+  padding: 14px 10px 20px;
+}
+
+.shell-subhead {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.shell-tabs {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+// Größerer Viewport – Desktop-Erweiterung
+@media (min-width: 900px) {
+  .shell-layout {
+    padding: 20px 16px 26px;
+  }
+
+  .shell-subhead {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .shell-tabs {
+    justify-content: flex-end;
+  }
+
+  .shell-menu-overlay {
+    display: none !important; /* Desktop primär über Tabs */
+  }
+}
+
+/* Allgemeine Utility-Klassen für Module */
+
+.app-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #6b7280;
+}
+
+.app-status-dot.ok {
+  background: #22c55e;
+}
+
+.app-status-dot.error {
+  background: #ef4444;
+}
+
+.app-card {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Du kannst HotStuff/PromptSave hier schrittweise angleichen,
+   indem du z. B. deine card-Styles und Toolbar-Styles darauf aufsetzt. */
