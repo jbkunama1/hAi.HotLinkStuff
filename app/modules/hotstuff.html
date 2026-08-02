@@ -727,6 +727,17 @@
       return Number.isNaN(ts) ? 0 : ts;
     }
 
+    function formatDate(value) {
+      if (!value) return '-';
+      const ts = Date.parse(value);
+      if (Number.isNaN(ts)) return value;
+      const d = new Date(ts);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
     function sortNewestFirst(list) {
       return [...list].sort((a, b) => {
         const timeA = parseDateValue(a.updated_at) || parseDateValue(a.created_at);
@@ -788,7 +799,7 @@
           ${item.image ? `<img class="thumb" src="${item.image}" alt="${escapeHtml(item.title || 'Bild')}" />` : ''}
           ${item.content ? `<div class="desc">${escapeHtml(item.content)}</div>` : ''}
           ${item.link ? `<a class="link" href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.link)}</a>` : ''}
-          <div class="small">Erstellt: ${escapeHtml(item.created_at || '-')}</div>
+          <div class="small">Erstellt: ${escapeHtml(formatDate(item.created_at))}</div>
           <div class="card-actions">
             <button class="btn" data-edit="${item.id}">Bearbeiten</button>
             <button class="btn danger" data-delete="${item.id}">Löschen</button>
