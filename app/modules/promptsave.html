@@ -23,6 +23,12 @@
       --badge-text: #22d3ee;
       --glow-a: rgba(14, 165, 233, 0.35);
       --glow-b: rgba(99, 102, 241, 0.35);
+      --scrollbar-track: rgba(15, 23, 42, 0.55);
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 62%, var(--accent-2));
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 66%, #ffffff);
+      --scrollbar-track: rgba(15, 23, 42, 0.55);
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 62%, var(--accent-2));
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 66%, #ffffff);
     }
 
     body[data-mode="light"] {
@@ -39,6 +45,12 @@
       --badge-text: #0369a1;
       --glow-a: rgba(14, 165, 233, 0.18);
       --glow-b: rgba(99, 102, 241, 0.18);
+      --scrollbar-track: #dbeafe;
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 72%, #1f2937);
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 70%, #1f2937);
+      --scrollbar-track: #dbeafe;
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 72%, #1f2937);
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 70%, #1f2937);
     }
 
     body[data-theme="mint"] {
@@ -58,6 +70,56 @@
     }
 
     * { box-sizing: border-box; }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 999px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--scrollbar-thumb), var(--accent-2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--scrollbar-thumb-hover), var(--accent));
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 999px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--scrollbar-thumb), var(--accent-2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--scrollbar-thumb-hover), var(--accent));
+    }
 
     body {
       margin: 0;
@@ -220,10 +282,42 @@
       filter: brightness(1.1);
     }
 
+    .btn.active {
+      background: var(--accent);
+      border-color: transparent;
+      color: #fff;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 12px;
+    }
+
+    .grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    .grid.list-view .card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-areas: "badge title actions";
+      gap: 10px 14px;
+      align-items: center;
+      padding: 12px 16px;
+    }
+
+    .grid.list-view .card .meta { grid-area: badge; }
+    .grid.list-view .card h3 { grid-area: title; margin: 0; }
+    .grid.list-view .card .content { display: none; }
+    .grid.list-view .card .small { grid-area: actions; display: none; }
+    .grid.list-view .card-actions { grid-area: actions; margin-left: 0; }
+
+    @media (max-width: 640px) {
+      .grid.list-view .card {
+        grid-template-columns: 1fr;
+        grid-template-areas: "badge" "title" "actions";
+      }
     }
 
     .card {
@@ -508,6 +602,10 @@
           <option value="general">general</option>
         </select>
       </div>
+      <div class="toolbar-row">
+        <button class="btn secondary" id="gridViewBtn" type="button" data-view="grid">🪟 Grid</button>
+        <button class="btn secondary" id="listViewBtn" type="button" data-view="list">📄 Liste</button>
+      </div>
     </section>
 
     <section id="cards" class="grid"></section>
@@ -572,6 +670,7 @@
     let editingId = null;
     const THEME_MODE_KEY = 'promptsave_mode';
     const THEME_NAME_KEY = 'promptsave_theme';
+    const VIEW_MODE_KEY = 'promptsave_view_mode';
 
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
@@ -588,6 +687,8 @@
     const importMessage = document.getElementById('importMessage');
     const modeToggleBtn = document.getElementById('modeToggleBtn');
     const themeSelect = document.getElementById('themeSelect');
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
 
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
@@ -641,10 +742,19 @@
       themeSelect.value = theme;
     }
 
+    function applyViewMode(mode) {
+      localStorage.setItem(VIEW_MODE_KEY, mode);
+      renderPrompts(); // Re-render to apply class
+      gridViewBtn.classList.toggle('active', mode === 'grid');
+      listViewBtn.classList.toggle('active', mode === 'list');
+    }
+
     function initThemeSettings() {
       const savedMode = localStorage.getItem(THEME_MODE_KEY) || 'dark';
       const savedTheme = localStorage.getItem(THEME_NAME_KEY) || 'frost';
+      const savedViewMode = localStorage.getItem(VIEW_MODE_KEY) || 'grid';
       applyThemeSettings(savedMode, savedTheme);
+      applyViewMode(savedViewMode);
     }
 
     function getFilteredPrompts() {
@@ -663,6 +773,8 @@
       cards.innerHTML = '';
       emptyState.classList.toggle('hidden', filtered.length !== 0);
       if (!filtered.length) return;
+
+      cards.className = `grid ${localStorage.getItem(VIEW_MODE_KEY) === 'list' ? 'list-view' : ''}`;
 
       filtered.forEach(prompt => {
         const badge = getCategoryBadge(prompt.category);
@@ -815,6 +927,8 @@
       applyThemeSettings(mode, themeSelect.value);
       localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
     });
+    gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
+    listViewBtn.addEventListener('click', () => applyViewMode('list'));
     searchInput.addEventListener('input', renderPrompts);
     categoryFilter.addEventListener('change', renderPrompts);
 

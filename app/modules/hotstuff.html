@@ -23,6 +23,9 @@
       --badge-text: #f97316;
       --glow-a: rgba(234, 88, 12, 0.35);
       --glow-b: rgba(15, 118, 110, 0.35);
+      --scrollbar-track: rgba(15, 23, 42, 0.55);
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 62%, var(--accent-2));
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent) 52%, #ffffff);
     }
 
     body[data-mode="light"] {
@@ -39,6 +42,12 @@
       --badge-text: #9a3412;
       --glow-a: rgba(249, 115, 22, 0.18);
       --glow-b: rgba(15, 118, 110, 0.18);
+      --scrollbar-track: #dbeafe;
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 72%, #1f2937);
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 70%, #1f2937);
+      --scrollbar-track: #dbeafe;
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 72%, #1f2937);
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent-2) 70%, #1f2937);
     }
 
     body[data-theme="ocean"] {
@@ -47,6 +56,9 @@
       --badge-text: #0369a1;
       --glow-a: rgba(2, 132, 199, 0.35);
       --glow-b: rgba(15, 118, 110, 0.35);
+      --scrollbar-track: rgba(15, 23, 42, 0.55);
+      --scrollbar-thumb: color-mix(in srgb, var(--accent) 62%, var(--accent-2));
+      --scrollbar-thumb-hover: color-mix(in srgb, var(--accent) 52%, #ffffff);
     }
 
     body[data-theme="violet"] {
@@ -58,6 +70,56 @@
     }
 
     * { box-sizing: border-box; }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 999px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--scrollbar-thumb), var(--accent-2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--scrollbar-thumb-hover), var(--accent));
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 999px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--scrollbar-thumb), var(--accent-2));
+      border-radius: 999px;
+      border: 2px solid var(--scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, var(--scrollbar-thumb-hover), var(--accent));
+    }
 
     body {
       margin: 0;
@@ -165,7 +227,7 @@
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid var(--border);
-      background: #020617;
+      background: var(--surface-2);
       color: var(--text);
     }
 
@@ -227,10 +289,67 @@
       color: #fff;
     }
 
+        .btn.active {
+          background: var(--accent);
+          border-color: transparent;
+          color: #fff;
+        }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 12px;
+    }
+
+    .grid.list-view {
+          grid-template-columns: 1fr;
+    }
+
+    .grid.list-view .card {
+     display: flex;
+     flex-direction: row;
+     gap: 16px;
+     align-items: center;
+     padding: 12px 18px;
+    }
+
+    .grid.list-view .card .meta {
+     order: 1;
+     white-space: nowrap;
+    }
+
+    .grid.list-view .card h3 {
+     order: 2;
+     flex: 1;
+     min-width: 0;
+    }
+
+    .grid.list-view .card .desc {
+     display: none;
+    }
+
+    .grid.list-view .card .thumb {
+     order: 3;
+     width: 80px;
+     height: 80px;
+     flex-shrink: 0;
+     border-radius: 12px;
+    }
+
+    .grid.list-view .card .link {
+     order: 4;
+     display: none;
+    }
+
+    .grid.list-view .card .small {
+     order: 5;
+     white-space: nowrap;
+    }
+
+    .grid.list-view .card-actions {
+     order: 6;
+     margin-left: auto;
+     flex-shrink: 0;
     }
 
     .card {
@@ -465,6 +584,10 @@
         <button class="tab-btn" data-filter="text">📝 Text</button>
         <button class="tab-btn" data-filter="image">🖼️ Bilder</button>
         <button class="tab-btn" data-filter="link">🔗 Links</button>
+        <div class="view-controls">
+          <button class="btn secondary" id="gridViewBtn" type="button" data-view="grid">🪟 Grid</button>
+          <button class="btn secondary" id="listViewBtn" type="button" data-view="list">📄 Liste</button>
+        </div>
       </div>
     </section>
 
@@ -522,6 +645,7 @@
     let currentImageData = '';
     const THEME_MODE_KEY = 'hotstuff_mode';
     const THEME_NAME_KEY = 'hotstuff_theme';
+    const VIEW_MODE_KEY = 'hotstuff_view_mode';
 
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
@@ -537,6 +661,8 @@
     const linkInput = document.getElementById('linkInput');
     const modeToggleBtn = document.getElementById('modeToggleBtn');
     const themeSelect = document.getElementById('themeSelect');
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const listViewBtn = document.getElementById('listViewBtn');
 
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
@@ -590,10 +716,19 @@
       themeSelect.value = theme;
     }
 
+    function applyViewMode(mode) {
+      localStorage.setItem(VIEW_MODE_KEY, mode);
+      renderItems(); // Re-render to apply class
+      gridViewBtn.classList.toggle('active', mode === 'grid');
+      listViewBtn.classList.toggle('active', mode === 'list');
+    }
+
     function initThemeSettings() {
       const savedMode = localStorage.getItem(THEME_MODE_KEY) || 'dark';
       const savedTheme = localStorage.getItem(THEME_NAME_KEY) || 'ember';
+      const savedViewMode = localStorage.getItem(VIEW_MODE_KEY) || 'grid';
       applyThemeSettings(savedMode, savedTheme);
+      applyViewMode(savedViewMode);
     }
 
     function getFilteredItems() {
@@ -611,6 +746,8 @@
       cards.innerHTML = '';
       emptyState.classList.toggle('hidden', filtered.length !== 0);
       if (!filtered.length) return;
+
+      cards.className = `grid ${localStorage.getItem(VIEW_MODE_KEY) === 'list' ? 'list-view' : ''}`;
 
       filtered.forEach(item => {
         const article = document.createElement('article');
@@ -739,6 +876,8 @@
       applyThemeSettings(mode, themeSelect.value);
       localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
     });
+    gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
+    listViewBtn.addEventListener('click', () => applyViewMode('list'));
 
     initThemeSettings();
 
