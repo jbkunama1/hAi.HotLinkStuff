@@ -19,4 +19,9 @@ COPY app/index.php /var/www/html/index.php
 RUN mkdir -p /var/www/data \
     && chown -R www-data:www-data /var/www/data /var/www/html
 
+# Entrypoint-Script in Container kopieren und ausführbar machen
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
