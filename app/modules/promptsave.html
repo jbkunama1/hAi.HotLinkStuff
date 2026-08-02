@@ -723,6 +723,17 @@
       return Number.isNaN(ts) ? 0 : ts;
     }
 
+    function formatDate(value) {
+      if (!value) return '-';
+      const ts = Date.parse(value);
+      if (Number.isNaN(ts)) return value;
+      const d = new Date(ts);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
     function sortNewestFirst(list) {
       return [...list].sort((a, b) => {
         const timeA = parseDateValue(a.updated_at) || parseDateValue(a.created_at);
@@ -784,7 +795,7 @@
           <div class="meta"><span class="badge ${badge.className}">${escapeHtml(badge.label)}</span></div>
           <h3>${escapeHtml(prompt.title)}</h3>
           <div class="content">${escapeHtml(prompt.content)}</div>
-          <div class="small">Aktualisiert: ${escapeHtml(prompt.updated_at || '-')}</div>
+          <div class="small">Aktualisiert: ${escapeHtml(formatDate(prompt.updated_at))}</div>
           <div class="card-actions">
             <button class="btn" data-copy="${prompt.id}">Kopieren</button>
             <button class="btn" data-edit="${prompt.id}">Bearbeiten</button>
