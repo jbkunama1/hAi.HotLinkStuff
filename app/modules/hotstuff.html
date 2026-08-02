@@ -12,11 +12,49 @@
       --text: #e5e7eb;
       --muted: #9ca3af;
       --border: #1f2937;
-      --accent: #ea580c;   /* HotStuff warm */
-      --accent-2: #0f766e; /* Sekundär */
+      --accent: #ea580c;
+      --accent-2: #0f766e;
       --danger: #ef4444;
       --radius: 18px;
       --shadow: 0 14px 32px rgba(15, 23, 42, 0.45);
+      --overlay: rgba(15, 23, 42, 0.65);
+      --placeholder: #6b7280;
+      --badge-bg: #1f2937;
+      --badge-text: #f97316;
+      --glow-a: rgba(234, 88, 12, 0.35);
+      --glow-b: rgba(15, 118, 110, 0.35);
+    }
+
+    body[data-mode="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #eef2ff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+      --overlay: rgba(15, 23, 42, 0.35);
+      --placeholder: #64748b;
+      --badge-bg: #e2e8f0;
+      --badge-text: #9a3412;
+      --glow-a: rgba(249, 115, 22, 0.18);
+      --glow-b: rgba(15, 118, 110, 0.18);
+    }
+
+    body[data-theme="ocean"] {
+      --accent: #0284c7;
+      --accent-2: #0f766e;
+      --badge-text: #0369a1;
+      --glow-a: rgba(2, 132, 199, 0.35);
+      --glow-b: rgba(15, 118, 110, 0.35);
+    }
+
+    body[data-theme="violet"] {
+      --accent: #7c3aed;
+      --accent-2: #2563eb;
+      --badge-text: #6d28d9;
+      --glow-a: rgba(124, 58, 237, 0.35);
+      --glow-b: rgba(37, 99, 235, 0.35);
     }
 
     * { box-sizing: border-box; }
@@ -24,7 +62,10 @@
     body {
       margin: 0;
       font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at top left, var(--glow-a), transparent 54%),
+        radial-gradient(circle at bottom right, var(--glow-b), transparent 54%),
+        var(--bg);
       color: var(--text);
       padding: 18px 12px 22px;
     }
@@ -111,6 +152,13 @@
       align-items: center;
     }
 
+    .theme-controls {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
     .search {
       flex: 1;
       min-width: 200px;
@@ -122,13 +170,13 @@
     }
 
     .search::placeholder {
-      color: #6b7280;
+      color: var(--placeholder);
     }
 
     .btn {
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: #020617;
+      background: var(--surface-2);
       color: var(--text);
       padding: 8px 14px;
       font-size: 0.9rem;
@@ -143,12 +191,12 @@
     }
 
     .btn.secondary {
-      background: #020617;
+      background: var(--surface-2);
       border-color: var(--border);
     }
 
     .btn.danger {
-      background: #020617;
+      background: var(--surface-2);
       border-color: #fecaca;
       color: var(--danger);
     }
@@ -167,7 +215,7 @@
       padding: 7px 11px;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: #020617;
+      background: var(--surface-2);
       color: var(--muted);
       font-size: 0.85rem;
       cursor: pointer;
@@ -210,8 +258,8 @@
     .badge {
       padding: 5px 8px;
       border-radius: 999px;
-      background: #1f2937;
-      color: #f97316;
+      background: var(--badge-bg);
+      color: var(--badge-text);
       font-weight: 600;
     }
 
@@ -266,7 +314,7 @@
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: var(--overlay);
       display: none;
       align-items: center;
       justify-content: center;
@@ -322,7 +370,7 @@
       padding: 10px 12px;
       border-radius: 14px;
       border: 1px solid var(--border);
-      background: #020617;
+      background: var(--surface-2);
       color: var(--text);
       font: inherit;
     }
@@ -334,7 +382,19 @@
 
     input::placeholder,
     textarea::placeholder {
-      color: #6b7280;
+      color: var(--placeholder);
+    }
+
+    .theme-select {
+      width: 150px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
     }
 
     .foot-actions {
@@ -391,6 +451,14 @@
         <input id="searchInput" class="search" type="text" placeholder="Suchen nach Titel, Text oder Link ..." />
         <button class="btn primary" id="newBtn">Neuer Eintrag</button>
         <button class="btn secondary" id="exportBtn">JSON exportieren</button>
+        <div class="theme-controls">
+          <button class="btn secondary" id="modeToggleBtn" type="button">☀️ Hell</button>
+          <select id="themeSelect" class="theme-select" aria-label="Theme wählen">
+            <option value="ember">Ember</option>
+            <option value="ocean">Ocean</option>
+            <option value="violet">Violet</option>
+          </select>
+        </div>
       </div>
       <div class="tabs">
         <button class="tab-btn active" data-filter="all">📚 Alle</button>
@@ -452,6 +520,8 @@
     let activeFilter = 'all';
     let editingId = null;
     let currentImageData = '';
+    const THEME_MODE_KEY = 'hotstuff_mode';
+    const THEME_NAME_KEY = 'hotstuff_theme';
 
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
@@ -465,6 +535,8 @@
     const contentInput = document.getElementById('contentInput');
     const imageInput = document.getElementById('imageInput');
     const linkInput = document.getElementById('linkInput');
+    const modeToggleBtn = document.getElementById('modeToggleBtn');
+    const themeSelect = document.getElementById('themeSelect');
 
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
@@ -488,9 +560,40 @@
     async function loadItems() {
       const result = await apiRequest('getAll');
       if (!result.success) throw new Error(result.message || 'Laden fehlgeschlagen');
-      items = result.items || [];
+      items = sortNewestFirst(result.items || []);
       renderItems();
       setStatus(true, 'Verbindung OK');
+    }
+
+    function parseDateValue(value) {
+      if (!value) return 0;
+      const ts = Date.parse(value);
+      return Number.isNaN(ts) ? 0 : ts;
+    }
+
+    function sortNewestFirst(list) {
+      return [...list].sort((a, b) => {
+        const timeA = parseDateValue(a.updated_at) || parseDateValue(a.created_at);
+        const timeB = parseDateValue(b.updated_at) || parseDateValue(b.created_at);
+        if (timeA !== timeB) return timeB - timeA;
+        const idA = Number(a.id);
+        const idB = Number(b.id);
+        if (!Number.isNaN(idA) && !Number.isNaN(idB) && idA !== idB) return idB - idA;
+        return String(b.id || '').localeCompare(String(a.id || ''));
+      });
+    }
+
+    function applyThemeSettings(mode, theme) {
+      document.body.dataset.mode = mode;
+      document.body.dataset.theme = theme;
+      modeToggleBtn.textContent = mode === 'dark' ? '☀️ Hell' : '🌙 Dunkel';
+      themeSelect.value = theme;
+    }
+
+    function initThemeSettings() {
+      const savedMode = localStorage.getItem(THEME_MODE_KEY) || 'dark';
+      const savedTheme = localStorage.getItem(THEME_NAME_KEY) || 'ember';
+      applyThemeSettings(savedMode, savedTheme);
     }
 
     function getFilteredItems() {
@@ -626,6 +729,18 @@
     document.getElementById('cancelBtn').addEventListener('click', closeModal);
     document.getElementById('saveBtn').addEventListener('click', saveItem);
     document.getElementById('exportBtn').addEventListener('click', exportJson);
+    modeToggleBtn.addEventListener('click', () => {
+      const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
+      applyThemeSettings(nextMode, themeSelect.value);
+      localStorage.setItem(THEME_MODE_KEY, nextMode);
+    });
+    themeSelect.addEventListener('change', () => {
+      const mode = document.body.dataset.mode || 'dark';
+      applyThemeSettings(mode, themeSelect.value);
+      localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
+    });
+
+    initThemeSettings();
 
     cards.addEventListener('click', e => {
       const editId = e.target.getAttribute('data-edit');
