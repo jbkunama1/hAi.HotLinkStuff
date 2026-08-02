@@ -17,8 +17,13 @@
           <p class="shell-brand-subtitle">HotStuff &amp; PromptSave mit zentralem Login</p>
         </div>
       </div>
-      <div class="shell-hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
-        <span></span><span></span><span></span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="shell-tab-pill" id="logoutBtn" type="button">
+          <span>Logout</span>
+        </button>
+        <div class="shell-hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </header>
 
@@ -79,8 +84,9 @@
     const viewSubtitle = document.getElementById('viewSubtitle');
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const menuOverlay = document.getElementById('menuOverlay');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    const tabButtons = Array.from(document.querySelectorAll('.shell-tab-pill'));
+    const tabButtons = Array.from(document.querySelectorAll('.shell-tab-pill[data-view]'));
     const menuLinks = Array.from(document.querySelectorAll('.shell-menu-link'));
 
     function setView(view) {
@@ -130,6 +136,13 @@
       }
     });
 
+    // Logout führt auf logout.php im app-Ordner
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        window.location.href = 'logout.php';
+      });
+    }
+
     // Optional: view-Parameter aus URL (z. B. ?view=promptsave)
     (function initFromQuery() {
       const params = new URLSearchParams(window.location.search);
@@ -140,6 +153,30 @@
         setView('hotstuff');
       }
     })();
+
+    // Optional: einfacher API-Test (nur Konsole)
+    async function testApi() {
+      try {
+        const match = document.cookie.match(/(^| )hotlinkstuff_pw=([^;]+)/);
+        const pw = match ? decodeURIComponent(match[2]) : '';
+        if (!pw) return;
+        const res = await fetch('api.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            resource: 'items',
+            action: 'test',
+            password: pw
+          })
+        });
+        const data = await res.json();
+        console.log('API-Test:', data);
+      } catch (e) {
+        console.warn('API-Test fehlgeschlagen', e);
+      }
+    }
+
+    testApi();
   </script>
 </body>
 </html>
