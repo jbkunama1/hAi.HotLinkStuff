@@ -257,11 +257,43 @@
     }
 
     .badge {
-      padding: 5px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
       border-radius: 999px;
       background: var(--badge-bg);
       color: var(--badge-text);
       font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.9;
+      box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
+    }
+
+    .badge.badge-gemini {
+      background: color-mix(in srgb, #10b981 24%, var(--surface-2));
+      color: #10b981;
+      border: 1px solid color-mix(in srgb, #10b981 45%, transparent);
+    }
+
+    .badge.badge-chatgpt {
+      background: color-mix(in srgb, #22d3ee 22%, var(--surface-2));
+      color: #06b6d4;
+      border: 1px solid color-mix(in srgb, #06b6d4 45%, transparent);
+    }
+
+    .badge.badge-general {
+      background: color-mix(in srgb, #f97316 22%, var(--surface-2));
+      color: #f97316;
+      border: 1px solid color-mix(in srgb, #f97316 45%, transparent);
     }
 
     .small {
@@ -633,10 +665,11 @@
       if (!filtered.length) return;
 
       filtered.forEach(prompt => {
+        const badge = getCategoryBadge(prompt.category);
         const article = document.createElement('article');
         article.className = 'card';
         article.innerHTML = `
-          <div class="meta"><span class="badge">${escapeHtml(prompt.category)}</span></div>
+          <div class="meta"><span class="badge ${badge.className}">${escapeHtml(badge.label)}</span></div>
           <h3>${escapeHtml(prompt.title)}</h3>
           <div class="content">${escapeHtml(prompt.content)}</div>
           <div class="small">Aktualisiert: ${escapeHtml(prompt.updated_at || '-')}</div>
@@ -648,6 +681,17 @@
         `;
         cards.appendChild(article);
       });
+    }
+
+    function getCategoryBadge(category) {
+      switch (String(category || '').toLowerCase()) {
+        case 'gemini':
+          return { className: 'badge-gemini', label: 'Gemini' };
+        case 'chatgpt':
+          return { className: 'badge-chatgpt', label: 'ChatGPT' };
+        default:
+          return { className: 'badge-general', label: 'General' };
+      }
     }
 
     function openModal(prompt = null) {
