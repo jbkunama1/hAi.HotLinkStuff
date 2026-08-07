@@ -1,5 +1,9 @@
 # 🔥🧠 hAI.HotLinkStuff
 
+<a href="https://www.buymeacoffee.com/highfish">
+<img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174">
+</a>
+
 > Die kombinierte Web-App aus **HotStuff** und **PromptSave** – für Links, Bilder, Textbausteine und Prompts in einer gemeinsamen Oberfläche mit PHP + SQLite.[file:8][file:9][file:11]
 
 ![Repo Status](https://img.shields.io/badge/status-active-16a34a?style=for-the-badge)
@@ -229,3 +233,4 @@ MIT License
 **TheRealTeacher / Daniel Lienhard**
 
 Praxisnahe Tools für Unterricht, Technikprojekte und digitale Organisation.
+
