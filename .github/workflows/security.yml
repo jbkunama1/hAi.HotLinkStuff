@@ -25,9 +25,15 @@ jobs:
 
   codeql:
     name: SAST (CodeQL)
-    uses: github/codeql-action/codeql-analysis.yml@v3
-    with:
-      languages: javascript,python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: CodeQL Init
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,python
+      - name: CodeQL Analyze
+        uses: github/codeql-action/analyze@v3
 
   trivy:
     name: IaC / FS Scan (Trivy)
