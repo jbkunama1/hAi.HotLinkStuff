@@ -19,6 +19,22 @@
         </div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
+        <div class="shell-controls">
+          <select id="shellThemeSelect" class="theme-select" aria-label="Theme wählen">
+            <option value="ember">🔥 Ember</option>
+            <option value="ocean">🌊 Ocean</option>
+            <option value="violet">🔮 Violet</option>
+            <option value="frost">❄️ Frost</option>
+            <option value="mint">🌿 Mint</option>
+            <option value="sunset">🌅 Sunset</option>
+          </select>
+          <select id="shellLayoutSelect" class="theme-select" aria-label="Layout wählen">
+            <option value="3">▦ 3 Spalten</option>
+            <option value="2">▤ 2 Spalten</option>
+            <option value="1">▬ Untereinander</option>
+          </select>
+          <button class="shell-tab-pill" id="modeToggleBtn" type="button">☀️ Hell</button>
+        </div>
         <button class="shell-tab-pill" id="logoutBtn" type="button">
           <span>Logout</span>
         </button>
@@ -175,6 +191,103 @@
     }
 
     testApi();
+
+    /* ── Globale Theme- & Layout-Steuerung ─────────────────────────
+       Zentrale Preferences werden in localStorage (global_keys) und
+       an die Module per postMessage verteilt. Module, die das noch
+       nicht verstehen, bleiben unberührt. */
+    const shellThemeSelect = document.getElementById('shellThemeSelect');
+    const shellLayoutSelect = document.getElementById('shellLayoutSelect');
+    const modeToggleBtn = document.getElementById('modeToggleBtn');
+    const globalKeys = ['hotlinkstuff_mode', 'hotlinkstuff_theme', 'hotlinkstuff_cols'];
+
+    // Bekannte Theme-Namen der Module (Fallback pro Modul)
+    const moduleThemeFallback = {
+      hotstuff: 'ember',
+      promptsave: 'frost'
+    };
+
+    function currentView() {
+      return document.body.classList.contains('view-promptsave') ? 'promptsave' : 'hotstuff';
+    }
+
+    function moduleThemeKey(view) {
+      return view === 'promptsave' ? 'promptsave_theme' : 'hotstuff_theme';
+    }
+
+    function broadcast() {
+      const msg = {
+        type: 'shell-preferences',
+        mode: document.body.dataset.mode,
+        theme: shellThemeSelect.value,
+        cols: shellLayoutSelect.value
+      };
+      if (frame.contentWindow) frame.contentWindow.postMessage(msg, '*');
+    }
+
+    function applyShellPreferences() {
+      document.body.dataset.mode = shellThemeSelect.dataset.mode;
+      document.body.dataset.theme = shellThemeSelect.value;
+      modeToggleBtn.textContent = shellThemeSelect.dataset.mode === 'dark' ? '☀️ Hell' : '🌙 Dunkel';
+      broadcast();
+    }
+
+    function applyGlobalStorage() {
+      globalKeys.forEach(key => localStorage.setItem(key, document.body.dataset[key.replace('hotlinkstuff_', '')]));
+      localStorage.setItem(moduleThemeKey(currentView()), shellThemeSelect.value);
+    }
+
+    function initShellPreferences() {
+      const mode = localStorage.getItem('hotlinkstuff_mode') || 'dark';
+      const theme = localStorage.getItem('hotlinkstuff_theme') ||
+        localStorage.getItem(moduleThemeKey(currentView())) ||
+        moduleThemeFallback[currentView()];
+      const cols = localStorage.getItem('hotlinkstuff_cols') || '3';
+      shellThemeSelect.dataset.mode = mode;
+      shellThemeSelect.value = theme;
+      shellLayoutSelect.value = cols;
+      applyShellPreferences();
+    }
+
+    function broadcastFromModule() {
+      /* Modul meldet eigenen Theme-Wechsel zurück: Shell übernimmt es. */
+      const view = currentView();
+      const mode = localStorage.getItem(view === 'promptsave' ? 'promptsave_mode' : 'hotstuff_mode');
+      const theme = localStorage.getItem(moduleThemeKey(view));
+      if (mode) {
+        shellThemeSelect.dataset.mode = mode;
+        applyShellPreferences();
+      }
+      if (theme) {
+        shellThemeSelect.value = theme;
+        applyShellPreferences();
+      }
+      applyGlobalStorage();
+    }
+
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'module-preferences') {
+        broadcastFromModule();
+      }
+    });
+
+    shellThemeSelect.addEventListener('change', () => {
+      applyShellPreferences();
+      applyGlobalStorage();
+    });
+
+    shellLayoutSelect.addEventListener('change', () => {
+      applyGlobalStorage();
+      broadcast();
+    });
+
+    modeToggleBtn.addEventListener('click', () => {
+      shellThemeSelect.dataset.mode = shellThemeSelect.dataset.mode === 'dark' ? 'light' : 'dark';
+      applyShellPreferences();
+      applyGlobalStorage();
+    });
+
+    initShellPreferences();
   </script>
 </body>
 </html>

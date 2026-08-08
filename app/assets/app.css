@@ -15,6 +15,33 @@
   --shadow-soft: 0 14px 32px rgba(15, 23, 42, 0.45);
 }
 
+/* Shell-Theme-Switcher: Mode (hell/dunkel) */
+body[data-mode="light"] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #eef2ff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #cbd5e1;
+  --shadow-strong: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+body[data-mode="light"] {
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.15), transparent 54%),
+    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.15), transparent 54%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 70%, #f8fafc 100%);
+}
+
+/* Shell-Theme-Switcher: Farbthemes */
+body[data-theme="ember"] { --accent: #ea580c; --accent2: #0f766e; --accent3: #0ea5e9; }
+body[data-theme="ocean"] { --accent: #0284c7; --accent2: #0f766e; --accent3: #22d3ee; }
+body[data-theme="violet"] { --accent: #7c3aed; --accent2: #2563eb; --accent3: #a855f7; }
+body[data-theme="frost"]  { --accent: #0ea5e9; --accent2: #6366f1; --accent3: #22d3ee; }
+body[data-theme="mint"]   { --accent: #10b981; --accent2: #0d9488; --accent3: #34d399; }
+body[data-theme="sunset"] { --accent: #f97316; --accent2: #ec4899; --accent3: #fb923c; }
+
 /* Global */
 
 *,
@@ -257,14 +284,39 @@ body {
   text-align: right;
 }
 
-/* Modul-Ansicht-Styling (Akzentwechsel) */
+/* Modul-Ansicht-Styling (Akzentwechsel – nutzt aktives Theme) */
 
 body.view-hotstuff .shell-brand-mark {
-  background: linear-gradient(135deg, #ea580c, #0f766e);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
 }
 
 body.view-promptsave .shell-brand-mark {
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+}
+
+/* Globale Shell-Steuerung (Theme & Layout) */
+
+.shell-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.theme-select {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.theme-select:focus-visible {
+  outline: 2px solid var(--accent3);
+  outline-offset: 2px;
 }
 
 /* Breakpoints – Mobile-first */
