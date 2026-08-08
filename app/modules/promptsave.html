@@ -69,6 +69,30 @@
       --glow-b: rgba(236, 72, 153, 0.35);
     }
 
+    body[data-theme="ember"] {
+      --accent: #ea580c;
+      --accent-2: #0f766e;
+      --badge-text: #c2410c;
+      --glow-a: rgba(234, 88, 12, 0.35);
+      --glow-b: rgba(15, 118, 110, 0.35);
+    }
+
+    body[data-theme="ocean"] {
+      --accent: #0284c7;
+      --accent-2: #0f766e;
+      --badge-text: #0369a1;
+      --glow-a: rgba(2, 132, 199, 0.35);
+      --glow-b: rgba(15, 118, 110, 0.35);
+    }
+
+    body[data-theme="violet"] {
+      --accent: #7c3aed;
+      --accent-2: #2563eb;
+      --badge-text: #6d28d9;
+      --glow-a: rgba(124, 58, 237, 0.35);
+      --glow-b: rgba(37, 99, 235, 0.35);
+    }
+
     * { box-sizing: border-box; }
 
     * {
@@ -294,6 +318,11 @@
       gap: 12px;
     }
 
+    .grid.cols-2 {
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    }
+
+    .grid.cols-1,
     .grid.list-view {
       grid-template-columns: 1fr;
     }
@@ -587,9 +616,12 @@
         <div class="theme-controls">
           <button class="btn secondary" id="modeToggleBtn" type="button">☀️ Hell</button>
           <select id="themeSelect" class="theme-select" aria-label="Theme wählen">
-            <option value="frost">Frost</option>
-            <option value="mint">Mint</option>
-            <option value="sunset">Sunset</option>
+            <option value="frost">❄️ Frost</option>
+            <option value="mint">🌿 Mint</option>
+            <option value="sunset">🌅 Sunset</option>
+            <option value="ember">🔥 Ember</option>
+            <option value="ocean">🌊 Ocean</option>
+            <option value="violet">🔮 Violet</option>
           </select>
         </div>
       </div>
@@ -760,12 +792,32 @@
       listViewBtn.classList.toggle('active', mode === 'list');
     }
 
+    function applyColsSetting(cols) {
+      localStorage.setItem('hotlinkstuff_cols', cols);
+      renderPrompts();
+    }
+
+    function getCardClasses() {
+      const viewMode = localStorage.getItem(VIEW_MODE_KEY) || 'grid';
+      const cols = localStorage.getItem('hotlinkstuff_cols') || '3';
+      const classes = ['grid'];
+      if (viewMode === 'list') classes.push('list-view');
+      else if (cols === '1') classes.push('cols-1');
+      else if (cols === '2') classes.push('cols-2');
+      return classes.join(' ');
+    }
+
+    function notifyShell() {
+      window.parent?.postMessage({ type: 'module-preferences' }, '*');
+    }
+
     function initThemeSettings() {
-      const savedMode = localStorage.getItem(THEME_MODE_KEY) || 'dark';
-      const savedTheme = localStorage.getItem(THEME_NAME_KEY) || 'frost';
+      const savedMode = localStorage.getItem('hotlinkstuff_mode') || localStorage.getItem(THEME_MODE_KEY) || 'dark';
+      const savedTheme = localStorage.getItem('hotlinkstuff_theme') || localStorage.getItem(THEME_NAME_KEY) || 'frost';
       const savedViewMode = localStorage.getItem(VIEW_MODE_KEY) || 'grid';
       applyThemeSettings(savedMode, savedTheme);
       applyViewMode(savedViewMode);
+      if (localStorage.getItem('hotlinkstuff_cols')) renderPrompts();
     }
 
     function getFilteredPrompts() {
@@ -785,7 +837,7 @@
       emptyState.classList.toggle('hidden', filtered.length !== 0);
       if (!filtered.length) return;
 
-      cards.className = `grid ${localStorage.getItem(VIEW_MODE_KEY) === 'list' ? 'list-view' : ''}`;
+      cards.className = getCardClasses();
 
       filtered.forEach(prompt => {
         const badge = getCategoryBadge(prompt.category);
@@ -932,11 +984,15 @@
       const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
       applyThemeSettings(nextMode, themeSelect.value);
       localStorage.setItem(THEME_MODE_KEY, nextMode);
+      localStorage.setItem('hotlinkstuff_mode', nextMode);
+      notifyShell();
     });
     themeSelect.addEventListener('change', () => {
       const mode = document.body.dataset.mode || 'dark';
       applyThemeSettings(mode, themeSelect.value);
       localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
+      localStorage.setItem('hotlinkstuff_theme', themeSelect.value);
+      notifyShell();
     });
     gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
     listViewBtn.addEventListener('click', () => applyViewMode('list'));
@@ -944,6 +1000,19 @@
     categoryFilter.addEventListener('change', renderPrompts);
 
     initThemeSettings();
+
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d || d.type !== 'shell-preferences') return;
+      if (d.mode) {
+        applyThemeSettings(d.mode, d.theme);
+        localStorage.setItem(THEME_MODE_KEY, d.mode);
+        localStorage.setItem(THEME_NAME_KEY, d.theme);
+      }
+      if (d.cols) {
+        applyColsSetting(d.cols);
+      }
+    });
 
     cards.addEventListener('click', e => {
       const editId = e.target.getAttribute('data-edit');
