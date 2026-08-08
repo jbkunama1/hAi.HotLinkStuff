@@ -6,10 +6,10 @@
 
 > Die kombinierte Web-App aus **HotStuff** und **PromptSave** – für Links, Bilder, Textbausteine und Prompts in einer gemeinsamen Oberfläche mit PHP + SQLite.[file:8][file:9][file:11]
 
-![Repo Status](https://img.shields.io/badge/status-active-16a34a?style=for-the-badge)
-![Stack](https://img.shields.io/badge/stack-PHP%20%7C%20SQLite%20%7C%20JS-0f766e?style=for-the-badge)
-![Deployment](https://img.shields.io/badge/deploy-Portainer%20Stack-2563eb?style=for-the-badge)
-![License](https://img.shields.io/badge/license-MIT-f59e0b?style=for-the-badge)
+[![Repo Status](https://img.shields.io/badge/status-active-16a34a?style=for-the-badge)](https://github.com/jbkunama1/hAi.HotLinkStuff)
+[![Stack](https://img.shields.io/badge/stack-PHP%20%7C%20SQLite%20%7C%20JS-0f766e?style=for-the-badge)](https://github.com/jbkunama1/hAi.HotLinkStuff)
+[![Deployment](https://img.shields.io/badge/deploy-Portainer%20Stack-2563eb?style=for-the-badge)](https://github.com/jbkunama1/hAi.HotLinkStuff)
+[![License](https://img.shields.io/badge/license-MIT-f59e0b?style=for-the-badge)](https://github.com/jbkunama1/hAi.HotLinkStuff)
 
 ---
 
@@ -233,4 +233,3 @@ MIT License
 **TheRealTeacher / Daniel Lienhard**
 
 Praxisnahe Tools für Unterricht, Technikprojekte und digitale Organisation.
-
