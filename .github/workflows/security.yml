@@ -37,7 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: github/codeql-action/init@v3
-        with:
       - uses: github/codeql-action/analyze@v3
 
   trivy:
