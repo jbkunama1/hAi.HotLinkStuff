@@ -645,17 +645,18 @@
 
     <section class="import-card">
       <div>
-        <h3>📥 Import &amp; Export</h3>
+        <h3>📥 Markdown Import</h3>
         <p class="hint">
-          CSV-Format: <code>title,content,category</code> — Kategorien: <code>gemini</code>, <code>chatgpt</code>, <code>general</code>.
+          Wähle eine .md Datei zum Importieren — oder füge Markdown direkt ein. Frontmatter <code>title:</code> und <code>category:</code> werden ausgelesen.
         </p>
       </div>
+      <input type="file" id="mdFile" accept=".md" style="padding:6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font:inherit;max-width:100%;" />
       <textarea
-        id="csvInput"
-        placeholder="title,content,category&#10;Mein Prompt,Erstelle eine Unterrichtsidee,general"
+        id="mdContent"
+        placeholder="---&#10;title: Mein Titel&#10;category: general&#10;---&#10;&#10;# Inhalt hier"
       ></textarea>
       <div class="toolbar-row">
-        <button class="btn secondary" id="importBtn">CSV importieren</button>
+        <button class="btn secondary" id="importBtn">Markdown importieren</button>
         <div class="hint" id="importMessage"></div>
       </div>
     </section>
@@ -949,16 +950,38 @@
       return '"' + text.replace(/"/g, '""') + '"';
     }
 
-    async function importCsv() {
-      const csv = csvInput.value.trim();
-      if (!csv) {
-        importMessage.textContent = 'Bitte CSV-Inhalt einfügen.';
+    async function importMd() {
+      const file = document.getElementById('mdFile').files[0];
+      const text = document.getElementById('mdContent').value.trim();
+      if (!file && !text) {
+        importMessage.textContent = 'Datei wählen oder Text einfügen.';
         return;
       }
-      const result = await apiRequest('importCsv', { csv });
-      importMessage.textContent = result.message || '';
+
+      let content = text;
+      if (file) {
+        content = await file.text();
+      }
+
+      // Einfacher Frontmatter-Parser
+      let title = 'Importiertes Dokument';
+      let category = 'general';
+      const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
+      if (fmMatch) {
+        const fm = fmMatch[1];
+        const tMatch = fm.match(/^title:\s*(.*)$/m);
+        const cMatch = fm.match(/^category:\s*(.*)$/m);
+        if (tMatch) title = tMatch[1].trim();
+        if (cMatch) category = cMatch[1].trim();
+        content = content.replace(fmMatch[0], '').trim();
+      }
+
+      const result = await apiRequest('save', {
+        prompt: { title, content, category }
+      });
+      importMessage.textContent = result.success ? 'Erfolgreich importiert.' : result.message;
       if (result.success) {
-        csvInput.value = '';
+        document.getElementById('mdContent').value = '';
         await loadPrompts();
       }
     }
@@ -979,7 +1002,7 @@
     document.getElementById('cancelBtn').addEventListener('click', closeModal);
     document.getElementById('saveBtn').addEventListener('click', savePrompt);
     document.getElementById('exportBtn').addEventListener('click', exportCsv);
-    document.getElementById('importBtn').addEventListener('click', importCsv);
+    document.getElementById('importBtn').addEventListener('click', importMd);
     modeToggleBtn.addEventListener('click', () => {
       const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
       applyThemeSettings(nextMode, themeSelect.value);

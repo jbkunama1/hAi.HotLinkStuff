@@ -482,6 +482,27 @@
       display: none;
     }
 
+    .import-card {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 10px;
+    }
+
+    .import-card h3 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -648,6 +669,24 @@
 
     <section id="cards" class="grid"></section>
     <section id="emptyState" class="empty hidden">Noch keine Einträge vorhanden.</section>
+
+    <section class="import-card">
+      <div>
+        <h3>📥 Markdown Import</h3>
+        <p class="hint">
+          Wähle eine .md Datei zum Importieren — oder füge Markdown direkt ein. Frontmatter <code>title:</code> und <code>category:</code> werden ausgelesen.
+        </p>
+      </div>
+      <input type="file" id="mdFile" accept=".md" style="padding:6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font:inherit;max-width:100%;" />
+      <textarea
+        id="mdContent"
+        placeholder="---&#10;title: Mein Titel&#10;category: text&#10;---&#10;&#10;# Inhalt hier"
+      ></textarea>
+      <div class="toolbar-row">
+        <button class="btn secondary" id="importBtn">Markdown importieren</button>
+        <div class="hint" id="importMessage"></div>
+      </div>
+    </section>
   </div>
 
   <div id="modal" class="modal">
