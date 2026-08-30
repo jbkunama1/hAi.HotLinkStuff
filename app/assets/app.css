@@ -70,50 +70,52 @@ body {
 .shell-layout {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 18px 14px 24px;
+  padding: 8px 10px 12px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 6px;
 }
 
 .shell-header {
   background: var(--surface);
-  border-radius: 24px;
+  border-radius: 18px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-strong);
-  padding: 14px 18px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .shell-brand {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .shell-brand-mark {
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
   color: #fff;
-  font-size: 26px;
+  font-size: 18px;
 }
 
 .shell-brand-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .shell-brand-subtitle {
-  margin: 3px 0 0;
-  font-size: 0.9rem;
+  margin: 1px 0 0;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 
@@ -159,7 +161,7 @@ body {
 }
 
 .shell-subhead {
-  padding: 14px 18px;
+  padding: 6px 10px;
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -169,42 +171,54 @@ body {
 
 .shell-subhead-title {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 .shell-subhead-text {
-  margin: 3px 0 0;
-  font-size: 0.85rem;
+  margin: 1px 0 0;
+  font-size: 0.72rem;
   color: var(--muted);
 }
 
 .shell-tabs {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .shell-tab-pill {
-  padding: 8px 12px;
+  padding: 5px 10px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: #020617;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  font-weight: 500;
 }
 
 .shell-tab-pill span.icon {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }
 
 .shell-tab-pill.active {
   background: linear-gradient(135deg, var(--accent), var(--accent3));
   border-color: transparent;
   color: #fff;
+}
+
+.theme-select {
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
 }
 
 .shell-frame-wrap {
@@ -298,20 +312,9 @@ body.view-promptsave .shell-brand-mark {
 
 .shell-controls {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.theme-select {
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  font: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
 }
 
 .theme-select:focus-visible {
