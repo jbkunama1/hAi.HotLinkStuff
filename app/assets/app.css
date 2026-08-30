@@ -1,18 +1,20 @@
 /* Basis-Theme – angelehnt an deine Login-Seite (Dark) */
 
 :root {
-  --bg: #020617;
-  --surface: #0b1120;
-  --surface-2: #020617;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --border: #1f2937;
-  --accent: #0f766e;
-  --accent2: #ea580c;
-  --accent3: #0ea5e9;
-  --radius: 22px;
-  --shadow-strong: 0 20px 50px rgba(15, 23, 42, 0.65);
-  --shadow-soft: 0 14px 32px rgba(15, 23, 42, 0.45);
+  --bg: #0b0e17;
+  --surface: #121729;
+  --surface-2: #171e33;
+  --text: #eef1fb;
+  --muted: #9aa3c0;
+  --border: rgba(255,255,255,0.08);
+  --accent-1: #7c5cff;
+  --accent-2: #ff5c8a;
+  --accent-3: #24d1c4;
+  --accent-4: #ffb84c;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --shadow-strong: 0 20px 50px rgba(0,0,0,0.45);
 }
 
 /* Shell-Theme-Switcher: Mode (hell/dunkel) */
@@ -59,9 +61,9 @@ html, body {
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(234, 88, 12, 0.35), transparent 54%),
-    radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.35), transparent 54%),
-    linear-gradient(180deg, #020617 0%, #0b1120 70%, #020617 100%);
+    radial-gradient(circle at 15% 50%, rgba(124, 92, 255, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(255, 92, 138, 0.15), transparent 40%),
+    #0b0e17;
   color: var(--text);
 }
 
@@ -70,23 +72,24 @@ body {
 .shell-layout {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 8px 10px 12px;
+  padding: 16px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 16px;
 }
 
 .shell-header {
-  background: var(--surface);
-  border-radius: 18px;
+  background: rgba(18, 23, 41, 0.85);
+  backdrop-filter: blur(18px);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-strong);
-  padding: 8px 12px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 16px;
 }
 
 .shell-brand {
@@ -97,14 +100,15 @@ body {
 }
 
 .shell-brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
   color: #fff;
-  font-size: 18px;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(124, 92, 255, 0.3);
 }
 
 .shell-brand-title {
@@ -120,27 +124,20 @@ body {
 }
 
 .shell-hamburger {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--surface-2);
   display: grid;
   place-items: center;
   cursor: pointer;
-}
-
-.shell-hamburger span {
-  display: block;
-  width: 16px;
-  height: 2px;
-  border-radius: 999px;
-  background: #cbd5f5;
-  margin: 2px 0;
+  transition: all 0.2s ease;
 }
 
 .shell-hamburger:hover {
-  background: #111827;
+  transform: translateY(-2px);
+  background: #1e263d;
 }
 
 .shell-main {
@@ -151,10 +148,11 @@ body {
 }
 
 .shell-card {
-  background: var(--surface);
-  border-radius: 24px;
+  background: rgba(18, 23, 41, 0.85);
+  backdrop-filter: blur(18px);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-strong);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -190,7 +188,7 @@ body {
   padding: 5px 10px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #020617;
+  background: var(--surface-2);
   color: var(--muted);
   font-size: 0.78rem;
   cursor: pointer;
@@ -198,6 +196,7 @@ body {
   align-items: center;
   gap: 4px;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .shell-tab-pill span.icon {
@@ -205,9 +204,15 @@ body {
 }
 
 .shell-tab-pill.active {
-  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
   border-color: transparent;
   color: #fff;
+  box-shadow: 0 4px 12px rgba(124, 92, 255, 0.3);
+}
+
+.shell-tab-pill:hover:not(.active) {
+  transform: translateY(-1px);
+  background: #1e263d;
 }
 
 .theme-select {
@@ -219,13 +224,20 @@ body {
   font: inherit;
   font-size: 0.75rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-select:hover {
+  transform: translateY(-1px);
+  background: #1e263d;
 }
 
 .shell-frame-wrap {
   flex: 1;
   min-height: 0;
   border-top: 1px solid var(--border);
-  background: #020617;
+  background: #0b0e17;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .shell-frame-wrap iframe {
@@ -254,8 +266,9 @@ body {
 
 .shell-menu-card {
   width: 260px;
-  background: var(--surface);
-  border-radius: 22px;
+  background: rgba(18, 23, 41, 0.95);
+  backdrop-filter: blur(18px);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-strong);
   padding: 16px;
@@ -270,15 +283,20 @@ body {
 
 .shell-menu-link {
   padding: 10px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background: #020617;
+  background: var(--surface-2);
   cursor: pointer;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.shell-menu-link:hover {
+  background: #1e263d;
 }
 
 .shell-menu-link span.icon {
