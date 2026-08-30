@@ -58,6 +58,20 @@
   <div class="admin-card">
     <h1>System Administration</h1>
     <div class="form-group">
+      <label for="adminDefaultTheme">Standard-Theme (für alle neuen Benutzer)</label>
+      <select id="adminDefaultTheme">
+        <option value="cloud">Cloud (High-End)</option>
+        <option value="ember">Ember</option>
+        <option value="ocean">Ocean</option>
+        <option value="violet">Violet</option>
+        <option value="frost">Frost</option>
+        <option value="mint">Mint</option>
+        <option value="sunset">Sunset</option>
+      </select>
+      <button id="saveAdminTheme" style="margin-top: 10px;">Standard speichern</button>
+      <span id="saveStatus" style="margin-left: 10px; color: #24d1c4; display: none;">Gespeichert!</span>
+    </div>
+    <div class="form-group">
       <label>Benutzerverwaltung</label>
       <p>Hier werden Benutzer verwaltet (Platzhalter)</p>
     </div>
@@ -67,5 +81,21 @@
       <button>Logs exportieren</button>
     </div>
   </div>
+  <script>
+    const adminDefaultTheme = document.getElementById('adminDefaultTheme');
+    const saveAdminTheme = document.getElementById('saveAdminTheme');
+    const saveStatus = document.getElementById('saveStatus');
+
+    const savedDefault = localStorage.getItem('hotlinkstuff_admin_default_theme') || 'cloud';
+    adminDefaultTheme.value = savedDefault;
+
+    saveAdminTheme.addEventListener('click', () => {
+      localStorage.setItem('hotlinkstuff_admin_default_theme', adminDefaultTheme.value);
+      saveStatus.style.display = 'inline';
+      setTimeout(() => { saveStatus.style.display = 'none'; }, 2000);
+      // Notify parent/shell if needed
+      window.parent.postMessage({ type: 'admin-default-theme-changed', theme: adminDefaultTheme.value }, '*');
+    });
+  </script>
 </body>
 </html>

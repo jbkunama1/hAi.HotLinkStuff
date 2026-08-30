@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="assets/app.css" />
 </head>
 <body class="view-hotstuff">
+  <div class="ambient-blob blob-1"></div>
+  <div class="ambient-blob blob-2"></div>
+
   <div class="shell-layout">
     <header class="shell-header">
       <div class="shell-brand">
@@ -27,6 +30,7 @@
             <option value="frost">❄️ Frost</option>
             <option value="mint">🌿 Mint</option>
             <option value="sunset">🌅 Sunset</option>
+            <option value="cloud">☁️ Cloud (High-End)</option>
           </select>
           <select id="shellLayoutSelect" class="theme-select" aria-label="Layout wählen">
             <option value="3">▦ 3 Spalten</option>
@@ -62,7 +66,11 @@
               <span class="icon">🧠</span>
               <span>PromptSave</span>
             </button>
-          </div>
+                      <button class="shell-tab-pill" data-view="admin">
+                        <span class="icon">⚙️</span>
+                        <span>Admin</span>
+                      </button>
+                    </div>
         </div>
 
         <div class="shell-frame-wrap">
@@ -89,6 +97,10 @@
         <span class="icon">🧠</span>
         <span>PromptSave – Prompts</span>
       </button>
+      <button class="shell-menu-link" data-view="admin">
+        <span class="icon">⚙️</span>
+        <span>Admin – Einstellungen</span>
+      </button>
     </div>
   </div>
 
@@ -109,16 +121,21 @@
         frame.title = 'HotStuff';
         viewTitle.textContent = 'HotStuff';
         viewSubtitle.textContent = 'Links, Bilder und Textbausteine verwalten.';
-        document.body.classList.remove('view-promptsave');
-        document.body.classList.add('view-hotstuff');
-      } else {
+        document.body.className = 'view-hotstuff';
+      } else if (view === 'promptsave') {
         frame.src = 'modules/promptsave.html';
         frame.title = 'PromptSave';
         viewTitle.textContent = 'PromptSave';
         viewSubtitle.textContent = 'Prompts sammeln, bearbeiten, importieren und exportieren.';
-        document.body.classList.remove('view-hotstuff');
-        document.body.classList.add('view-promptsave');
+        document.body.className = 'view-promptsave';
+      } else if (view === 'admin') {
+        frame.src = 'modules/admin.html';
+        frame.title = 'Admin';
+        viewTitle.textContent = 'Admin';
+        viewSubtitle.textContent = 'Systemverwaltung und Einstellungen.';
+        document.body.className = 'view-admin';
       }
+
 
       tabButtons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.view === view);
@@ -238,10 +255,10 @@
     }
 
     function initShellPreferences() {
+      const adminDefault = localStorage.getItem('hotlinkstuff_admin_default_theme') || 'cloud';
+      const userTheme = localStorage.getItem('hotlinkstuff_theme');
       const mode = localStorage.getItem('hotlinkstuff_mode') || 'dark';
-      const theme = localStorage.getItem('hotlinkstuff_theme') ||
-        localStorage.getItem(moduleThemeKey(currentView())) ||
-        moduleThemeFallback[currentView()];
+      const theme = userTheme || adminDefault;
       const cols = localStorage.getItem('hotlinkstuff_cols') || '3';
       shellThemeSelect.dataset.mode = mode;
       shellThemeSelect.value = theme;
@@ -268,6 +285,12 @@
     window.addEventListener('message', e => {
       if (e.data && e.data.type === 'module-preferences') {
         broadcastFromModule();
+      } else if (e.data && e.data.type === 'admin-default-theme-changed') {
+        // Only update if no user override exists
+        if (!localStorage.getItem('hotlinkstuff_theme')) {
+           shellThemeSelect.value = e.data.theme;
+           applyShellPreferences();
+        }
       }
     });
 
