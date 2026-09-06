@@ -186,107 +186,39 @@
     testApi();
 
     /* ── Globale Theme- & Layout-Steuerung ─────────────────────────
-       Zentrale Preferences werden in localStorage (global_keys) und
-       an die Module per postMessage verteilt. Module, die das noch
-       nicht verstehen, bleiben unberührt. */
-    const shellThemeSelect = document.getElementById('shellThemeSelect');
-    const shellLayoutSelect = document.getElementById('shellLayoutSelect');
-    const modeToggleBtn = document.getElementById('modeToggleBtn');
-    const globalKeys = ['hotlinkstuff_mode', 'hotlinkstuff_theme', 'hotlinkstuff_cols'];
+       Einstellungen werden vom Admin-Modul verwaltet und per postMessage
+       an die Shell und ihre iframes verteilt. */
 
-    // Bekannte Theme-Namen der Module (Fallback pro Modul)
-    const moduleThemeFallback = {
-      hotstuff: 'ember',
-      promptsave: 'frost'
-    };
-
-    function currentView() {
-      return document.body.classList.contains('view-promptsave') ? 'promptsave' : 'hotstuff';
+    function broadcastPreferences(mode, theme, cols) {
+      if (frame.contentWindow) {
+        frame.contentWindow.postMessage({ type: 'shell-preferences', mode, theme, cols }, '*');
+      }
     }
 
-    function moduleThemeKey(view) {
-      return view === 'promptsave' ? 'promptsave_theme' : 'hotstuff_theme';
+    function applyPreferences(mode, theme, cols) {
+      document.body.dataset.mode = mode;
+      document.body.dataset.theme = theme;
+      broadcastPreferences(mode, theme, cols);
     }
 
-    function broadcast() {
-      const msg = {
-        type: 'shell-preferences',
-        mode: document.body.dataset.mode,
-        theme: shellThemeSelect.value,
-        cols: shellLayoutSelect.value
-      };
-      if (frame.contentWindow) frame.contentWindow.postMessage(msg, '*');
-    }
-
-    function applyShellPreferences() {
-      document.body.dataset.mode = shellThemeSelect.dataset.mode;
-      document.body.dataset.theme = shellThemeSelect.value;
-      modeToggleBtn.textContent = shellThemeSelect.dataset.mode === 'dark' ? '☀️ Hell' : '🌙 Dunkel';
-      broadcast();
-    }
-
-    function applyGlobalStorage() {
-      globalKeys.forEach(key => localStorage.setItem(key, document.body.dataset[key.replace('hotlinkstuff_', '')]));
-      localStorage.setItem(moduleThemeKey(currentView()), shellThemeSelect.value);
-    }
-
-    function initShellPreferences() {
-      const adminDefault = localStorage.getItem('hotlinkstuff_admin_default_theme') || 'cloud';
-      const userTheme = localStorage.getItem('hotlinkstuff_theme');
+    // Shell bootet mit gespeicherten Werten aus localStorage
+    (function initFromStorage() {
       const mode = localStorage.getItem('hotlinkstuff_mode') || 'dark';
-      const theme = userTheme || adminDefault;
+      const theme = localStorage.getItem('hotlinkstuff_theme') || 'cloud';
       const cols = localStorage.getItem('hotlinkstuff_cols') || '3';
-      shellThemeSelect.dataset.mode = mode;
-      shellThemeSelect.value = theme;
-      shellLayoutSelect.value = cols;
-      applyShellPreferences();
-    }
+      applyPreferences(mode, theme, cols);
+    })();
 
-    function broadcastFromModule() {
-      /* Modul meldet eigenen Theme-Wechsel zurück: Shell übernimmt es. */
-      const view = currentView();
-      const mode = localStorage.getItem(view === 'promptsave' ? 'promptsave_mode' : 'hotstuff_mode');
-      const theme = localStorage.getItem(moduleThemeKey(view));
-      if (mode) {
-        shellThemeSelect.dataset.mode = mode;
-        applyShellPreferences();
-      }
-      if (theme) {
-        shellThemeSelect.value = theme;
-        applyShellPreferences();
-      }
-      applyGlobalStorage();
-    }
-
+    // Empfange shell-preferences vom Admin-Modul
     window.addEventListener('message', e => {
-      if (e.data && e.data.type === 'module-preferences') {
-        broadcastFromModule();
-      } else if (e.data && e.data.type === 'admin-default-theme-changed') {
-        // Only update if no user override exists
-        if (!localStorage.getItem('hotlinkstuff_theme')) {
-           shellThemeSelect.value = e.data.theme;
-           applyShellPreferences();
-        }
+      if (e.data && e.data.type === 'shell-preferences') {
+        const { mode, theme, cols } = e.data;
+        localStorage.setItem('hotlinkstuff_mode', mode);
+        localStorage.setItem('hotlinkstuff_theme', theme);
+        localStorage.setItem('hotlinkstuff_cols', cols);
+        applyPreferences(mode, theme, cols);
       }
     });
-
-    shellThemeSelect.addEventListener('change', () => {
-      applyShellPreferences();
-      applyGlobalStorage();
-    });
-
-    shellLayoutSelect.addEventListener('change', () => {
-      applyGlobalStorage();
-      broadcast();
-    });
-
-    modeToggleBtn.addEventListener('click', () => {
-      shellThemeSelect.dataset.mode = shellThemeSelect.dataset.mode === 'dark' ? 'light' : 'dark';
-      applyShellPreferences();
-      applyGlobalStorage();
-    });
-
-    initShellPreferences();
   </script>
 </body>
 </html>
