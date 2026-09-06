@@ -58,17 +58,32 @@
   <div class="admin-card">
     <h1>System Administration</h1>
     <div class="form-group">
-      <label for="adminDefaultTheme">Standard-Theme (für alle neuen Benutzer)</label>
-      <select id="adminDefaultTheme">
-        <option value="cloud">Cloud (High-End)</option>
-        <option value="ember">Ember</option>
-        <option value="ocean">Ocean</option>
-        <option value="violet">Violet</option>
-        <option value="frost">Frost</option>
-        <option value="mint">Mint</option>
-        <option value="sunset">Sunset</option>
+      <label for="adminThemeSelect">Design-Theme (Global)</label>
+      <select id="adminThemeSelect">
+        <option value="cloud">☁️ Cloud (High-End)</option>
+        <option value="ember">🔥 Ember</option>
+        <option value="ocean">🌊 Ocean</option>
+        <option value="violet">🔮 Violet</option>
+        <option value="frost">❄️ Frost</option>
+        <option value="mint">🌿 Mint</option>
+        <option value="sunset">🌅 Sunset</option>
       </select>
-      <button id="saveAdminTheme" style="margin-top: 10px;">Standard speichern</button>
+    </div>
+    <div class="form-group">
+      <label for="adminLayoutSelect">Spalten-Layout</label>
+      <select id="adminLayoutSelect">
+        <option value="3">▦ 3 Spalten</option>
+        <option value="2">▤ 2 Spalten</option>
+        <option value="1">▬ Untereinander</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="adminModeSelect">Anzeigemodus</label>
+      <select id="adminModeSelect">
+        <option value="dark">🌙 Dunkel</option>
+        <option value="light">☀️ Hell</option>
+      </select>
+      <button id="savePreferences" style="margin-top: 10px;">Einstellungen speichern</button>
       <span id="saveStatus" style="margin-left: 10px; color: #24d1c4; display: none;">Gespeichert!</span>
     </div>
     <div class="form-group">
@@ -82,19 +97,30 @@
     </div>
   </div>
   <script>
-    const adminDefaultTheme = document.getElementById('adminDefaultTheme');
-    const saveAdminTheme = document.getElementById('saveAdminTheme');
+    const adminThemeSelect = document.getElementById('adminThemeSelect');
+    const adminLayoutSelect = document.getElementById('adminLayoutSelect');
+    const adminModeSelect = document.getElementById('adminModeSelect');
+    const savePreferences = document.getElementById('savePreferences');
     const saveStatus = document.getElementById('saveStatus');
 
-    const savedDefault = localStorage.getItem('hotlinkstuff_admin_default_theme') || 'cloud';
-    adminDefaultTheme.value = savedDefault;
+    adminThemeSelect.value = localStorage.getItem('hotlinkstuff_theme') || 'cloud';
+    adminLayoutSelect.value = localStorage.getItem('hotlinkstuff_cols') || '3';
+    adminModeSelect.value = localStorage.getItem('hotlinkstuff_mode') || 'dark';
 
-    saveAdminTheme.addEventListener('click', () => {
-      localStorage.setItem('hotlinkstuff_admin_default_theme', adminDefaultTheme.value);
+    savePreferences.addEventListener('click', () => {
+      localStorage.setItem('hotlinkstuff_theme', adminThemeSelect.value);
+      localStorage.setItem('hotlinkstuff_cols', adminLayoutSelect.value);
+      localStorage.setItem('hotlinkstuff_mode', adminModeSelect.value);
+      
       saveStatus.style.display = 'inline';
       setTimeout(() => { saveStatus.style.display = 'none'; }, 2000);
-      // Notify parent/shell if needed
-      window.parent.postMessage({ type: 'admin-default-theme-changed', theme: adminDefaultTheme.value }, '*');
+      
+      window.parent.postMessage({ 
+        type: 'shell-preferences', 
+        theme: adminThemeSelect.value, 
+        cols: adminLayoutSelect.value, 
+        mode: adminModeSelect.value 
+      }, '*');
     });
   </script>
 </body>
