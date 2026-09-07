@@ -27,12 +27,6 @@
     <section class="shell-main">
       <article class="shell-card">
         <div class="shell-subhead">
-          <div>
-            <h2 id="viewTitle" class="shell-subhead-title">HotStuff</h2>
-            <p id="viewSubtitle" class="shell-subhead-text">
-              Links, Bilder und Textbausteine verwalten.
-            </p>
-          </div>
           <div class="shell-tabs">
             <button class="shell-tab-pill active" data-view="hotstuff">
               <span class="icon">🔥</span>
@@ -42,11 +36,11 @@
               <span class="icon">🧠</span>
               <span>PromptSave</span>
             </button>
-                      <button class="shell-tab-pill" data-view="admin">
-                        <span class="icon">⚙️</span>
-                        <span>Admin</span>
-                      </button>
-                    </div>
+            <button class="shell-tab-pill" data-view="admin">
+              <span class="icon">⚙️</span>
+              <span>Admin</span>
+            </button>
+          </div>
         </div>
 
         <div class="shell-frame-wrap">
@@ -64,26 +58,20 @@
 
   <div class="shell-menu-overlay" id="menuOverlay">
     <div class="shell-menu-card">
-      <h3>Module wählen</h3>
       <button class="shell-menu-link active" data-view="hotstuff">
-        <span class="icon">🔥</span>
-        <span>HotStuff – Material &amp; Links</span>
+        <span class="icon">🔥</span><span>HotStuff</span>
       </button>
       <button class="shell-menu-link" data-view="promptsave">
-        <span class="icon">🧠</span>
-        <span>PromptSave – Prompts</span>
+        <span class="icon">🧠</span><span>PromptSave</span>
       </button>
       <button class="shell-menu-link" data-view="admin">
-        <span class="icon">⚙️</span>
-        <span>Admin – Einstellungen</span>
+        <span class="icon">⚙️</span><span>Admin</span>
       </button>
     </div>
   </div>
 
   <script>
     const frame = document.getElementById('contentFrame');
-    const viewTitle = document.getElementById('viewTitle');
-    const viewSubtitle = document.getElementById('viewSubtitle');
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const menuOverlay = document.getElementById('menuOverlay');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -95,23 +83,16 @@
       if (view === 'hotstuff') {
         frame.src = 'modules/hotstuff.html';
         frame.title = 'HotStuff';
-        viewTitle.textContent = 'HotStuff';
-        viewSubtitle.textContent = 'Links, Bilder und Textbausteine verwalten.';
         document.body.className = 'view-hotstuff';
       } else if (view === 'promptsave') {
         frame.src = 'modules/promptsave.html';
         frame.title = 'PromptSave';
-        viewTitle.textContent = 'PromptSave';
-        viewSubtitle.textContent = 'Prompts sammeln, bearbeiten, importieren und exportieren.';
         document.body.className = 'view-promptsave';
       } else if (view === 'admin') {
         frame.src = 'modules/admin.html';
         frame.title = 'Admin';
-        viewTitle.textContent = 'Admin';
-        viewSubtitle.textContent = 'Systemverwaltung und Einstellungen.';
         document.body.className = 'view-admin';
       }
-
 
       tabButtons.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.view === view);
