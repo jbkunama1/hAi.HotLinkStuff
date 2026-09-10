@@ -627,15 +627,9 @@
     <section class="topbar">
       <div class="brand">
         <div class="brand-badge">🔥</div>
-        <div>
-          <h1>Heisser Scheiss Manager</h1>
-          <p>Text, Bilder und Links in einer Sammlung.</p>
-        </div>
+        <h1>HotStuff</h1>
       </div>
-      <div class="status">
-        <span class="dot" id="statusDot"></span>
-        <span id="statusText">Verbinde ...</span>
-      </div>
+      <div class="status" id="statusText">Verbinde ...</div>
     </section>
 
     <section class="toolbar">
@@ -780,8 +774,9 @@
     }
 
     function setStatus(ok, message) {
-      statusDot.className = 'dot ' + (ok ? 'ok' : 'error');
+      const statusText = document.getElementById('statusText');
       statusText.textContent = message;
+      statusText.style.color = ok ? '#22c55e' : 'var(--muted)';
     }
 
     async function loadItems() {
