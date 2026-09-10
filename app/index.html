@@ -18,31 +18,30 @@
         <div class="shell-brand-mark">🔥🧠</div>
         <h1 class="shell-brand-title">hAI.HotLinkStuff</h1>
       </div>
-      <button class="shell-tab-pill" id="logoutBtn" type="button">Logout</button>
-      <div class="shell-hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
-        <span></span><span></span><span></span>
+      <div class="shell-tabs">
+        <button class="shell-tab-pill active" data-view="hotstuff">
+          <span class="icon">🔥</span>
+          <span>HotStuff</span>
+        </button>
+        <button class="shell-tab-pill" data-view="promptsave">
+          <span class="icon">🧠</span>
+          <span>PromptSave</span>
+        </button>
+        <button class="shell-tab-pill" data-view="admin">
+          <span class="icon">⚙️</span>
+          <span>Admin</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="shell-tab-pill" id="logoutBtn" type="button">Logout</button>
+        <div class="shell-hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </header>
 
     <section class="shell-main">
       <article class="shell-card">
-        <div class="shell-subhead">
-          <div class="shell-tabs">
-            <button class="shell-tab-pill active" data-view="hotstuff">
-              <span class="icon">🔥</span>
-              <span>HotStuff</span>
-            </button>
-            <button class="shell-tab-pill" data-view="promptsave">
-              <span class="icon">🧠</span>
-              <span>PromptSave</span>
-            </button>
-            <button class="shell-tab-pill" data-view="admin">
-              <span class="icon">⚙️</span>
-              <span>Admin</span>
-            </button>
-          </div>
-        </div>
-
         <div class="shell-frame-wrap">
           <iframe
             id="contentFrame"
@@ -51,7 +50,6 @@
             loading="lazy"
           ></iframe>
         </div>
-
       </article>
     </section>
   </div>
