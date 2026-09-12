@@ -633,23 +633,11 @@
     </section>
 
     <section class="toolbar">
-      <div class="toolbar-row">
-        <input id="searchInput" class="search" type="text" placeholder="Suchen nach Titel, Text oder Link ..." />
-        <button class="btn primary" id="newBtn">Neuer Eintrag</button>
-        <button class="btn secondary" id="exportBtn">JSON exportieren</button>
-        <div class="theme-controls">
-          <button class="btn secondary" id="modeToggleBtn" type="button">☀️ Hell</button>
-          <select id="themeSelect" class="theme-select" aria-label="Theme wählen">
-            <option value="ember">🔥 Ember</option>
-            <option value="ocean">🌊 Ocean</option>
-            <option value="violet">🔮 Violet</option>
-            <option value="frost">❄️ Frost</option>
-            <option value="mint">🌿 Mint</option>
-            <option value="sunset">🌅 Sunset</option>
-          </select>
-        </div>
-      </div>
-      <div class="tabs">
+          <div class="toolbar-row">
+            <input id="searchInput" class="search" type="text" placeholder="Suchen nach Titel, Text oder Link ..." />
+            <button class="btn primary" id="newBtn">Neuer Eintrag</button>
+          </div>
+          <div class="tabs">
         <button class="tab-btn active" data-filter="all">📚 Alle</button>
         <button class="tab-btn" data-filter="text">📝 Text</button>
         <button class="tab-btn" data-filter="image">🖼️ Bilder</button>
@@ -739,25 +727,22 @@
     const THEME_NAME_KEY = 'hotstuff_theme';
     const VIEW_MODE_KEY = 'hotstuff_view_mode';
 
-    const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
-    const cards = document.getElementById('cards');
-    const emptyState = document.getElementById('emptyState');
-    const searchInput = document.getElementById('searchInput');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modalTitle');
-    const titleInput = document.getElementById('titleInput');
-    const categoryInput = document.getElementById('categoryInput');
-    const contentInput = document.getElementById('contentInput');
-    const imageInput = document.getElementById('imageInput');
-    const imagePreviewWrap = document.getElementById('imagePreviewWrap');
-    const imagePreview = document.getElementById('imagePreview');
-    const removeImageBtn = document.getElementById('removeImageBtn');
-    const linkInput = document.getElementById('linkInput');
-    const modeToggleBtn = document.getElementById('modeToggleBtn');
-    const themeSelect = document.getElementById('themeSelect');
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const listViewBtn = document.getElementById('listViewBtn');
+        const cards = document.getElementById('cards');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
+        const titleInput = document.getElementById('titleInput');
+        const categoryInput = document.getElementById('categoryInput');
+        const contentInput = document.getElementById('contentInput');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreviewWrap = document.getElementById('imagePreviewWrap');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const linkInput = document.getElementById('linkInput');
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
 
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
@@ -994,60 +979,49 @@
     });
 
     searchInput.addEventListener('input', renderItems);
-    document.getElementById('newBtn').addEventListener('click', () => openModal());
-    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-    document.getElementById('cancelBtn').addEventListener('click', closeModal);
-    document.getElementById('saveBtn').addEventListener('click', saveItem);
-    document.getElementById('exportBtn').addEventListener('click', exportJson);
+        document.getElementById('newBtn').addEventListener('click', () => openModal());
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('cancelBtn').addEventListener('click', closeModal);
+        document.getElementById('saveBtn').addEventListener('click', saveItem);
 
-    // Bild-Vorschau im Modal anzeigen, sobald eine Datei ausgewählt wird
-    imageInput.addEventListener('change', () => {
-      const file = imageInput.files[0];
-      if (file) {
-        fileToBase64(file).then(dataUrl => {
-          imagePreview.src = dataUrl;
-          imagePreviewWrap.classList.remove('hidden');
+        // Bild-Vorschau im Modal anzeigen, sobald eine Datei ausgewählt wird
+        imageInput.addEventListener('change', () => {
+          const file = imageInput.files[0];
+          if (file) {
+            fileToBase64(file).then(dataUrl => {
+              imagePreview.src = dataUrl;
+              imagePreviewWrap.classList.remove('hidden');
+            });
+          }
         });
-      }
-    });
 
-    // Vorhandenes/aktuelles Bild entfernen
-    removeImageBtn.addEventListener('click', () => {
-      currentImageData = '';
-      imageInput.value = '';
-      imagePreviewWrap.classList.add('hidden');
-    });
-    modeToggleBtn.addEventListener('click', () => {
-      const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
-      applyThemeSettings(nextMode, themeSelect.value);
-      localStorage.setItem(THEME_MODE_KEY, nextMode);
-      localStorage.setItem('hotlinkstuff_mode', nextMode);
-      notifyShell();
-    });
-    themeSelect.addEventListener('change', () => {
-      const mode = document.body.dataset.mode || 'dark';
-      applyThemeSettings(mode, themeSelect.value);
-      localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
-      localStorage.setItem('hotlinkstuff_theme', themeSelect.value);
-      notifyShell();
-    });
-    gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
-    listViewBtn.addEventListener('click', () => applyViewMode('list'));
+        // Vorhandenes/aktuelles Bild entfernen
+        removeImageBtn.addEventListener('click', () => {
+          currentImageData = '';
+          imageInput.value = '';
+          imagePreviewWrap.classList.add('hidden');
+        });
+        gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
+        listViewBtn.addEventListener('click', () => applyViewMode('list'));
 
-    initThemeSettings();
+        initThemeSettings();
 
-    window.addEventListener('message', e => {
-      const d = e.data;
-      if (!d || d.type !== 'shell-preferences') return;
-      if (d.mode) {
-        applyThemeSettings(d.mode, d.theme);
-        localStorage.setItem(THEME_MODE_KEY, d.mode);
-        localStorage.setItem(THEME_NAME_KEY, d.theme);
-      }
-      if (d.cols) {
-        applyColsSetting(d.cols);
-      }
-    });
+        window.addEventListener('message', e => {
+          const d = e.data;
+          if (!d) return;
+          if (d.type === 'shell-preferences') {
+            if (d.mode) {
+              applyThemeSettings(d.mode, d.theme);
+              localStorage.setItem(THEME_MODE_KEY, d.mode);
+              localStorage.setItem(THEME_NAME_KEY, d.theme);
+            }
+            if (d.cols) {
+              applyColsSetting(d.cols);
+            }
+          } else if (d.type === 'export-json' && d.module === 'hotstuff') {
+            exportJson();
+          }
+        });
 
     cards.addEventListener('click', e => {
       const editId = e.target.getAttribute('data-edit');
