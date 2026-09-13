@@ -87,9 +87,17 @@
       <span id="saveStatus" style="margin-left: 10px; color: #24d1c4; display: none;">Gespeichert!</span>
     </div>
     <div class="form-group">
-      <label>Benutzerverwaltung</label>
-      <p>Hier werden Benutzer verwaltet (Platzhalter)</p>
-    </div>
+          <label>Daten-Export</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="exportHotstuffBtn" type="button">HotStuff JSON exportieren</button>
+            <button id="exportPromptsaveBtn" type="button">PromptSave JSON exportieren</button>
+          </div>
+          <span id="exportStatus" style="margin-left: 10px; color: #24d1c4; display: none;"></span>
+        </div>
+        <div class="form-group">
+          <label>Benutzerverwaltung</label>
+          <p>Hier werden Benutzer verwaltet (Platzhalter)</p>
+        </div>
     <div class="form-group">
       <label>System-Konfiguration</label>
       <button>Cache leeren</button>
@@ -122,6 +130,24 @@
         mode: adminModeSelect.value 
       }, '*');
     });
+
+        // Export buttons - send message to specific module iframe
+        const exportHotstuffBtn = document.getElementById('exportHotstuffBtn');
+        const exportPromptsaveBtn = document.getElementById('exportPromptsaveBtn');
+        const exportStatus = document.getElementById('exportStatus');
+
+        function triggerExport(module, label) {
+          const frame = window.parent.document.getElementById('contentFrame');
+          if (frame && frame.contentWindow) {
+            frame.contentWindow.postMessage({ type: 'export-json', module }, '*');
+            exportStatus.textContent = `${label} Export gestartet...`;
+            exportStatus.style.display = 'inline';
+            setTimeout(() => { exportStatus.style.display = 'none'; }, 3000);
+          }
+        }
+
+        exportHotstuffBtn.addEventListener('click', () => triggerExport('hotstuff', 'HotStuff'));
+        exportPromptsaveBtn.addEventListener('click', () => triggerExport('promptsave', 'PromptSave'));
   </script>
 </body>
 </html>
