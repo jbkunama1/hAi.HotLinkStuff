@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  app:
+  hotlinkstuff:
     image: ghcr.io/jbkunama1/hai.hotlinkstuff:latest
     container_name: hai-hotlinkstuff
     ports:
       - "8080:80"
     volumes:
-      - data:/var/www/html/data
+      - hotlinkstuff_data:/var/www/html/data
     restart: unless-stopped
 
 volumes:
-  data:
+  hotlinkstuff_data:

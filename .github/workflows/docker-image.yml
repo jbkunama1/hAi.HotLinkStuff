@@ -1,17 +1,17 @@
-name: Docker Image CI/CD to GHCR
+name: Build and Push GHCR Docker Image
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ghcr.io/jbkunama1/hai.hotlinkstuff
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
