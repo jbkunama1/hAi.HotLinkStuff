@@ -739,7 +739,13 @@
           ...payload
         })
       });
-      const result = await response.json().catch(() => ({}));
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error(`Ungültige API-Antwort (HTTP ${response.status})`);
+      }
       if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
       if (!result || result.success !== true || !Array.isArray(result.items)) {
         throw new Error(result.message || 'Ungültige API-Antwort für HotStuff');
