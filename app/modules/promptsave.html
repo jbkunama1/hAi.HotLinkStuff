@@ -639,23 +639,6 @@
     <section id="cards" class="grid"></section>
     <section id="emptyState" class="empty hidden">Noch keine Prompts vorhanden.</section>
 
-    <section class="import-card">
-      <div>
-        <h3>📥 Markdown Import</h3>
-        <p class="hint">
-          Wähle eine .md Datei zum Importieren — oder füge Markdown direkt ein. Frontmatter <code>title:</code> und <code>category:</code> werden ausgelesen.
-        </p>
-      </div>
-      <input type="file" id="mdFile" accept=".md" style="padding:6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font:inherit;max-width:100%;" />
-      <textarea
-        id="mdContent"
-        placeholder="---&#10;title: Mein Titel&#10;category: general&#10;---&#10;&#10;# Inhalt hier"
-      ></textarea>
-      <div class="toolbar-row">
-        <button class="btn secondary" id="importBtn">Markdown importieren</button>
-        <div class="hint" id="importMessage"></div>
-      </div>
-    </section>
   </div>
 
   <div id="modal" class="modal">
@@ -730,7 +713,9 @@
           ...payload
         })
       });
-      return response.json();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
+      return result;
     }
 
     function setStatus(ok, message) {
@@ -946,42 +931,6 @@
       return '"' + text.replace(/"/g, '""') + '"';
     }
 
-    async function importMd() {
-      const file = document.getElementById('mdFile').files[0];
-      const text = document.getElementById('mdContent').value.trim();
-      if (!file && !text) {
-        importMessage.textContent = 'Datei wählen oder Text einfügen.';
-        return;
-      }
-
-      let content = text;
-      if (file) {
-        content = await file.text();
-      }
-
-      // Einfacher Frontmatter-Parser
-      let title = 'Importiertes Dokument';
-      let category = 'general';
-      const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
-      if (fmMatch) {
-        const fm = fmMatch[1];
-        const tMatch = fm.match(/^title:\s*(.*)$/m);
-        const cMatch = fm.match(/^category:\s*(.*)$/m);
-        if (tMatch) title = tMatch[1].trim();
-        if (cMatch) category = cMatch[1].trim();
-        content = content.replace(fmMatch[0], '').trim();
-      }
-
-      const result = await apiRequest('save', {
-        prompt: { title, content, category }
-      });
-      importMessage.textContent = result.success ? 'Erfolgreich importiert.' : result.message;
-      if (result.success) {
-        document.getElementById('mdContent').value = '';
-        await loadPrompts();
-      }
-    }
-
     async function copyPrompt(id) {
       const prompt = prompts.find(x => String(x.id) === String(id));
       if (!prompt) return;
@@ -998,7 +947,6 @@
     document.getElementById('cancelBtn').addEventListener('click', closeModal);
     document.getElementById('saveBtn').addEventListener('click', savePrompt);
     document.getElementById('exportBtn').addEventListener('click', exportCsv);
-    document.getElementById('importBtn').addEventListener('click', importMd);
     modeToggleBtn.addEventListener('click', () => {
       const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
       applyThemeSettings(nextMode, themeSelect.value);
