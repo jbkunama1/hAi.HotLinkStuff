@@ -89,6 +89,8 @@
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
+          credentials: 'same-origin',
+          cache: 'no-store',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             resource: targetInput.value,
