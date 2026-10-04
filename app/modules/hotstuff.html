@@ -651,23 +651,6 @@
     <section id="cards" class="grid"></section>
     <section id="emptyState" class="empty hidden">Noch keine Einträge vorhanden.</section>
 
-    <section class="import-card">
-      <div>
-        <h3>📥 Markdown Import</h3>
-        <p class="hint">
-          Wähle eine .md Datei zum Importieren — oder füge Markdown direkt ein. Frontmatter <code>title:</code> und <code>category:</code> werden ausgelesen.
-        </p>
-      </div>
-      <input type="file" id="mdFile" accept=".md" style="padding:6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font:inherit;max-width:100%;" />
-      <textarea
-        id="mdContent"
-        placeholder="---&#10;title: Mein Titel&#10;category: text&#10;---&#10;&#10;# Inhalt hier"
-      ></textarea>
-      <div class="toolbar-row">
-        <button class="btn secondary" id="importBtn">Markdown importieren</button>
-        <div class="hint" id="importMessage"></div>
-      </div>
-    </section>
   </div>
 
   <div id="modal" class="modal">

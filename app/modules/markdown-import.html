@@ -27,6 +27,11 @@
     <p>Importiere eine Markdown-Datei als Prompt. Optionales Frontmatter mit <code>title:</code> und <code>category:</code> wird automatisch ausgewertet.</p>
     <label for="mdFile">Markdown-Datei</label>
     <input id="mdFile" type="file" accept=".md,.markdown,text/markdown">
+    <label for="targetInput">Importziel</label>
+    <select id="targetInput">
+      <option value="prompts">🧠 PromptSave</option>
+      <option value="items">🔥 HotStuff</option>
+    </select>
     <div class="row">
       <div>
         <label for="titleInput">Titel (optional)</label>
@@ -55,6 +60,7 @@
     const contentInput = document.getElementById('mdContent');
     const titleInput = document.getElementById('titleInput');
     const categoryInput = document.getElementById('categoryInput');
+    const targetInput = document.getElementById('targetInput');
     const status = document.getElementById('status');
 
     fileInput.addEventListener('change', async () => {
@@ -73,14 +79,24 @@
     document.getElementById('importBtn').addEventListener('click', async () => {
       const parsed = readFrontmatter(contentInput.value.trim());
       const title = titleInput.value.trim() || parsed.title || 'Importiertes Dokument';
-      const category = ['general', 'gemini', 'chatgpt'].includes(parsed.category) ? parsed.category : categoryInput.value;
+      const isHotstuff = targetInput.value === 'items';
+      const category = isHotstuff
+        ? (['text', 'image', 'link'].includes(parsed.category) ? parsed.category : 'text')
+        : (['general', 'gemini', 'chatgpt'].includes(parsed.category) ? parsed.category : categoryInput.value);
       if (!parsed.content) { status.textContent = 'Bitte Inhalt eingeben oder Datei wählen.'; return; }
       status.textContent = 'Import läuft ...';
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ resource: 'prompts', action: 'create', password, prompt: { title, content: parsed.content, category } })
+          body: JSON.stringify({
+            resource: targetInput.value,
+            action: 'create',
+            password,
+            [isHotstuff ? 'item' : 'prompt']: isHotstuff
+              ? { title, category, content: parsed.content, link: '', image: '' }
+              : { title, content: parsed.content, category }
+          })
         });
         const result = await response.json();
         if (!response.ok || !result.success) throw new Error(result.message || `HTTP ${response.status}`);
