@@ -18,7 +18,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: system-ui, sans-serif;
-      padding: 2rem;
+      padding: 1rem;
       margin: 0;
     }
     .admin-card {
@@ -26,13 +26,25 @@
       backdrop-filter: blur(18px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 2rem;
+      padding: 1.25rem;
       box-shadow: 0 20px 50px rgba(0,0,0,0.45);
       max-width: 800px;
       margin: 0 auto;
     }
-    h1 { color: var(--accent); }
-    .form-group { margin-bottom: 1.5rem; }
+    h1 { color: var(--accent); font-size: clamp(1.35rem, 4vw, 1.8rem); margin: 0 0 1rem; }
+    .admin-intro { color: #9aa3c0; margin: -0.5rem 0 1rem; font-size: .9rem; }
+    .admin-section { border-top: 1px solid var(--border); }
+    .admin-section summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 1rem 0;
+      font-weight: 700;
+    }
+    .admin-section summary::-webkit-details-marker { display: none; }
+    .admin-section summary::after { content: '+'; float: right; color: #9aa3c0; }
+    .admin-section[open] summary::after { content: '−'; }
+    .admin-section-content { padding: 0 0 1rem; }
+    .form-group { margin-bottom: 1rem; }
     label { display: block; margin-bottom: 0.5rem; color: #9aa3c0; }
     input, select {
       width: 100%;
@@ -42,10 +54,12 @@
       background: rgba(0,0,0,0.2);
       color: white;
     }
+    .select-grid { display: grid; gap: .75rem; }
+    .button-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
     button {
       background: linear-gradient(135deg, #7c5cff, #ff5c8a);
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 0.65rem 1rem;
       border: none;
       border-radius: 999px;
       cursor: pointer;
@@ -56,10 +70,15 @@
 </head>
 <body>
   <div class="admin-card">
-    <h1>System Administration</h1>
-    <div class="form-group">
-      <label for="adminThemeSelect">Design-Theme (Global)</label>
-      <select id="adminThemeSelect">
+    <h1>Admin</h1>
+    <p class="admin-intro">Seltene Einstellungen bleiben hier, damit die Arbeitsfläche kompakt bleibt.</p>
+    <details class="admin-section" open>
+      <summary>Darstellung und Layout</summary>
+      <div class="admin-section-content">
+        <div class="select-grid">
+          <div>
+            <label for="adminThemeSelect">Design-Theme (Global)</label>
+            <select id="adminThemeSelect">
         <option value="cloud">☁️ Cloud (High-End)</option>
         <option value="ember">🔥 Ember</option>
         <option value="ocean">🌊 Ocean</option>
@@ -67,42 +86,50 @@
         <option value="frost">❄️ Frost</option>
         <option value="mint">🌿 Mint</option>
         <option value="sunset">🌅 Sunset</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="adminLayoutSelect">Spalten-Layout</label>
-      <select id="adminLayoutSelect">
+            </select>
+          </div>
+          <div>
+            <label for="adminLayoutSelect">Spalten-Layout</label>
+            <select id="adminLayoutSelect">
         <option value="3">▦ 3 Spalten</option>
         <option value="2">▤ 2 Spalten</option>
         <option value="1">▬ Untereinander</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="adminModeSelect">Anzeigemodus</label>
-      <select id="adminModeSelect">
+            </select>
+          </div>
+          <div>
+            <label for="adminModeSelect">Anzeigemodus</label>
+            <select id="adminModeSelect">
         <option value="dark">🌙 Dunkel</option>
         <option value="light">☀️ Hell</option>
-      </select>
-      <button id="savePreferences" style="margin-top: 10px;">Einstellungen speichern</button>
-      <span id="saveStatus" style="margin-left: 10px; color: #24d1c4; display: none;">Gespeichert!</span>
-    </div>
-    <div class="form-group">
-          <label>Daten-Export</label>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button id="exportHotstuffBtn" type="button">HotStuff JSON exportieren</button>
-            <button id="exportPromptsaveBtn" type="button">PromptSave JSON exportieren</button>
+            </select>
           </div>
-          <span id="exportStatus" style="margin-left: 10px; color: #24d1c4; display: none;"></span>
         </div>
-        <div class="form-group">
-          <label>Benutzerverwaltung</label>
-          <p>Hier werden Benutzer verwaltet (Platzhalter)</p>
+        <div class="button-row" style="margin-top: 1rem;">
+          <button id="savePreferences">Einstellungen speichern</button>
+          <span id="saveStatus" style="color: #24d1c4; display: none;">Gespeichert!</span>
         </div>
-    <div class="form-group">
-      <label>System-Konfiguration</label>
-      <button>Cache leeren</button>
-      <button>Logs exportieren</button>
-    </div>
+      </div>
+    </details>
+    <details class="admin-section">
+      <summary>Daten-Export</summary>
+      <div class="admin-section-content">
+        <div class="button-row">
+          <button id="exportHotstuffBtn" type="button">HotStuff JSON</button>
+          <button id="exportPromptsaveBtn" type="button">PromptSave JSON</button>
+        </div>
+        <span id="exportStatus" style="display: none; color: #24d1c4;"></span>
+      </div>
+    </details>
+    <details class="admin-section">
+      <summary>System und Benutzer</summary>
+      <div class="admin-section-content">
+        <p>Benutzerverwaltung ist vorbereitet, aber noch nicht aktiviert.</p>
+        <div class="button-row">
+          <button type="button">Cache leeren</button>
+          <button type="button">Logs exportieren</button>
+        </div>
+      </div>
+    </details>
   </div>
   <script>
     const adminThemeSelect = document.getElementById('adminThemeSelect');

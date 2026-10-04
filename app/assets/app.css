@@ -124,11 +124,11 @@ body[data-theme="cloud"] .shell-layout {
 .shell-layout {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 10px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .shell-header {
@@ -137,12 +137,36 @@ body[data-theme="cloud"] .shell-layout {
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-strong);
-  padding: 4px 10px;
+  padding: 6px 10px;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 5px;
+  min-height: 0;
+}
+
+.shell-header-top {
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-height: 36px;
+}
+
+.shell-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.shell-status {
+  margin-left: auto;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.65rem;
+  white-space: nowrap;
 }
 
 .shell-brand {
@@ -186,6 +210,12 @@ body[data-theme="cloud"] .shell-layout {
   place-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.shell-hamburger span {
+  width: 12px;
+  height: 1px;
+  background: currentColor;
 }
 
 .shell-hamburger:hover {
@@ -233,7 +263,13 @@ body[data-theme="cloud"] .shell-layout {
 .shell-tabs {
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.shell-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .shell-tab-pill {
@@ -249,6 +285,11 @@ body[data-theme="cloud"] .shell-layout {
   gap: 4px;
   font-weight: 500;
   transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.shell-logout {
+  display: inline-flex;
 }
 
 .shell-tab-pill span.icon {
@@ -328,6 +369,14 @@ body[data-theme="cloud"] .shell-layout {
   gap: 10px;
 }
 
+.shell-menu-heading {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .shell-menu-card h3 {
   margin: 0 0 10px;
   font-size: 0.95rem;
@@ -359,6 +408,11 @@ body[data-theme="cloud"] .shell-layout {
   background: linear-gradient(135deg, var(--accent), var(--accent3));
   border-color: transparent;
   color: #fff;
+}
+
+.shell-menu-logout {
+  margin-top: 6px;
+  color: #fda4af;
 }
 
 .shell-footer-note {
@@ -394,10 +448,8 @@ body.view-promptsave .shell-brand-mark {
 
 /* Breakpoints – Mobile-first */
 
-// Basis ist mobile: alles zentriert, kompakt
-
 .shell-layout {
-  padding: 14px 10px 20px;
+  padding: 8px 8px 14px;
 }
 
 .shell-subhead {
@@ -411,23 +463,77 @@ body.view-promptsave .shell-brand-mark {
   justify-content: flex-start;
 }
 
-// Größerer Viewport – Desktop-Erweiterung
 @media (min-width: 900px) {
   .shell-layout {
-    padding: 20px 16px 26px;
+    padding: 12px 16px 20px;
   }
 
-  .shell-subhead {
-    flex-direction: row;
+  .shell-header {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto;
     align-items: center;
+    column-gap: 16px;
+    padding: 5px 10px;
+  }
+
+  .shell-header-top {
+    display: contents;
+  }
+
+  .shell-brand {
+    grid-column: 1;
   }
 
   .shell-tabs {
+    grid-column: 2;
+    grid-row: 1;
     justify-content: flex-end;
+  }
+
+  .shell-status {
+    display: none;
+  }
+
+  .shell-actions {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .shell-tabs {
+    overflow: visible;
   }
 
   .shell-menu-overlay {
     display: none !important; /* Desktop primär über Tabs */
+  }
+
+  .shell-hamburger {
+    display: none;
+  }
+
+  .shell-menu-logout {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .shell-brand-title {
+    max-width: 145px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .shell-logout span:not(.icon) {
+    display: none;
+  }
+
+  .shell-logout {
+    padding-inline: 8px;
+  }
+
+  .shell-tab-pill {
+    min-height: 32px;
+    padding-inline: 9px;
   }
 }
 
