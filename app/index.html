@@ -42,6 +42,10 @@
           <span class="icon">⚙️</span>
           <span>Admin</span>
         </button>
+        <button class="shell-tab-pill" data-view="markdown-import">
+          <span class="icon">📥</span>
+          <span>Markdown</span>
+        </button>
       </nav>
     </header>
 
@@ -70,6 +74,9 @@
       </button>
       <button class="shell-menu-link" data-view="admin">
         <span class="icon">⚙️</span><span>Admin</span>
+      </button>
+      <button class="shell-menu-link" data-view="markdown-import">
+        <span class="icon">📥</span><span>Markdown-Import</span>
       </button>
       <button class="shell-menu-link shell-menu-logout" id="menuLogoutBtn" type="button">
         <span class="icon">↪</span><span>Abmelden</span>
@@ -100,6 +107,10 @@
         frame.src = 'modules/admin.html';
         frame.title = 'Admin';
         document.body.className = 'view-admin';
+      } else if (view === 'markdown-import') {
+        frame.src = 'modules/markdown-import.html';
+        frame.title = 'Markdown-Import';
+        document.body.className = 'view-markdown-import';
       }
 
       tabButtons.forEach(btn => {
@@ -154,6 +165,8 @@
       const view = params.get('view');
       if (view === 'promptsave') {
         setView('promptsave');
+      } else if (view === 'markdown-import') {
+        setView('markdown-import');
       } else {
         setView('hotstuff');
       }
@@ -161,10 +174,14 @@
 
     // Optional: einfacher API-Test (nur Konsole)
     async function testApi() {
+      const status = document.getElementById('statusText');
       try {
         const match = document.cookie.match(/(^| )hotlinkstuff_pw=([^;]+)/);
         const pw = match ? decodeURIComponent(match[2]) : '';
-        if (!pw) return;
+        if (!pw) {
+          status.textContent = 'Anmeldung erforderlich';
+          return;
+        }
         const res = await fetch('api.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -175,9 +192,12 @@
           })
         });
         const data = await res.json();
-        console.log('API-Test:', data);
+        if (!res.ok || !data.success) throw new Error(data.message || `HTTP ${res.status}`);
+        status.textContent = 'Verbindung OK';
+        status.style.color = '#22c55e';
       } catch (e) {
-        console.warn('API-Test fehlgeschlagen', e);
+        status.textContent = `Fehler: ${e.message}`;
+        status.style.color = '#f87171';
       }
     }
 

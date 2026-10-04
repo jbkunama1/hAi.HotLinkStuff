@@ -754,7 +754,9 @@
           ...payload
         })
       });
-      return response.json();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
+      return result;
     }
 
     function setStatus(ok, message) {
