@@ -168,7 +168,7 @@ Beispiel:
 environment:
   APP_PASSWORD: ${APP_PASSWORD:-hotstuff}
 volumes:
-  - ../data:/var/www/data
+  - ${DATA_PATH:-../data}:/var/www/data
 ```
 
 ---

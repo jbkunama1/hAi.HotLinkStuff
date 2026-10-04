@@ -14,12 +14,22 @@
 
   <div class="shell-layout">
     <header class="shell-header">
-      <div class="shell-brand">
+      <div class="shell-header-top">
+        <div class="shell-brand">
         <div class="shell-brand-mark">🔥🧠</div>
         <h1 class="shell-brand-title">hAI.HotLinkStuff</h1>
+        </div>
+        <div class="status shell-status" id="statusText">Verbinde ...</div>
+        <div class="shell-actions">
+          <button class="shell-tab-pill shell-logout" id="logoutBtn" type="button">
+            <span class="icon">↪</span><span>Abmelden</span>
+          </button>
+          <button class="shell-hamburger" id="hamburgerBtn" type="button" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
-      <div class="status" id="statusText" style="font-size: 0.7rem; color: var(--muted);">Verbinde ...</div>
-      <div class="shell-tabs">
+      <nav class="shell-tabs" aria-label="Hauptnavigation">
         <button class="shell-tab-pill active" data-view="hotstuff">
           <span class="icon">🔥</span>
           <span>HotStuff</span>
@@ -32,13 +42,7 @@
           <span class="icon">⚙️</span>
           <span>Admin</span>
         </button>
-      </div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="shell-tab-pill" id="logoutBtn" type="button">Logout</button>
-        <div class="shell-hamburger" id="hamburgerBtn" aria-label="Menü öffnen">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
+      </nav>
     </header>
 
     <section class="shell-main">
@@ -57,6 +61,7 @@
 
   <div class="shell-menu-overlay" id="menuOverlay">
     <div class="shell-menu-card">
+      <div class="shell-menu-heading">Bereiche</div>
       <button class="shell-menu-link active" data-view="hotstuff">
         <span class="icon">🔥</span><span>HotStuff</span>
       </button>
@@ -66,6 +71,9 @@
       <button class="shell-menu-link" data-view="admin">
         <span class="icon">⚙️</span><span>Admin</span>
       </button>
+      <button class="shell-menu-link shell-menu-logout" id="menuLogoutBtn" type="button">
+        <span class="icon">↪</span><span>Abmelden</span>
+      </button>
     </div>
   </div>
 
@@ -74,6 +82,7 @@
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const menuOverlay = document.getElementById('menuOverlay');
     const logoutBtn = document.getElementById('logoutBtn');
+    const menuLogoutBtn = document.getElementById('menuLogoutBtn');
 
     const tabButtons = Array.from(document.querySelectorAll('.shell-tab-pill[data-view]'));
     const menuLinks = Array.from(document.querySelectorAll('.shell-menu-link'));
@@ -100,6 +109,9 @@
       menuLinks.forEach(link => {
         link.classList.toggle('active', link.dataset.view === view);
       });
+
+      menuOverlay.classList.remove('show');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
     }
 
     tabButtons.forEach(btn => {
@@ -109,23 +121,29 @@
     menuLinks.forEach(link => {
       link.addEventListener('click', () => {
         setView(link.dataset.view);
-        menuOverlay.classList.remove('show');
       });
     });
 
     hamburgerBtn.addEventListener('click', () => {
       menuOverlay.classList.toggle('show');
+      hamburgerBtn.setAttribute('aria-expanded', menuOverlay.classList.contains('show'));
     });
 
     menuOverlay.addEventListener('click', e => {
       if (e.target === menuOverlay) {
         menuOverlay.classList.remove('show');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
       }
     });
 
     // Logout führt auf logout.php im app-Ordner
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
+        window.location.href = 'logout.php';
+      });
+    }
+    if (menuLogoutBtn) {
+      menuLogoutBtn.addEventListener('click', () => {
         window.location.href = 'logout.php';
       });
     }
