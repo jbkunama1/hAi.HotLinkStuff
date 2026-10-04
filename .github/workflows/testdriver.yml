@@ -28,7 +28,10 @@ jobs:
           npm i -D testdriverai vitest >/dev/null 2>&1 || echo "warn: npm install skipped"
 
       - name: Authenticate to TestDriver (OIDC)
+        if: ${{ hashFiles('tests/*.test.*') != '' }}
         uses: testdriverai/action@stable
+        with:
+          api-key: ${{ secrets.TD_API_KEY }}
 
       - name: Run TestDriver tests
         run: |
