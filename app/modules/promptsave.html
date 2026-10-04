@@ -705,6 +705,8 @@
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
         method: 'POST',
+        credentials: 'same-origin',
+        cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           resource: 'prompts',
@@ -715,6 +717,9 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
+      if (!result || result.success !== true || !Array.isArray(result.prompts)) {
+        throw new Error(result.message || 'Ungültige API-Antwort für PromptSave');
+      }
       return result;
     }
 
