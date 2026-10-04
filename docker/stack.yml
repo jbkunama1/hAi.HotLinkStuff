@@ -10,5 +10,5 @@ services:
     environment:
       APP_PASSWORD: ${APP_PASSWORD}
     volumes:
-      # Set DATA_PATH to an absolute host path in Portainer, or use the bundled data directory.
-      - ${DATA_PATH:-../data}:/var/www/data
+      # Set DATA_PATH to the host folder containing the SQLite files.
+      - ${DATA_PATH:-/data}:/var/www/data
