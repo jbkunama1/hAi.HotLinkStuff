@@ -54,8 +54,9 @@
     </div>
   </main>
   <script>
-    const API_URL = '../api.php';
-    const password = decodeURIComponent((document.cookie.match(/(?:^|;\s*)hotlinkstuff_pw=([^;]+)/) || [,''])[1]);
+    const API_URL = new URL('../api.php', window.location.href).toString();
+    const passwordCookie = document.cookie.split('; ').find(value => value.startsWith('hotlinkstuff_pw='));
+    const password = passwordCookie ? decodeURIComponent(passwordCookie.slice('hotlinkstuff_pw='.length)) : '';
     const fileInput = document.getElementById('mdFile');
     const contentInput = document.getElementById('mdContent');
     const titleInput = document.getElementById('titleInput');

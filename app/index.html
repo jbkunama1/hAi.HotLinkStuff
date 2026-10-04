@@ -96,19 +96,19 @@
 
     function setView(view) {
       if (view === 'hotstuff') {
-        frame.src = 'modules/hotstuff.html';
+        frame.src = 'modules/hotstuff.html?v=20261004';
         frame.title = 'HotStuff';
         document.body.className = 'view-hotstuff';
       } else if (view === 'promptsave') {
-        frame.src = 'modules/promptsave.html';
+        frame.src = 'modules/promptsave.html?v=20261004';
         frame.title = 'PromptSave';
         document.body.className = 'view-promptsave';
       } else if (view === 'admin') {
-        frame.src = 'modules/admin.html';
+        frame.src = 'modules/admin.html?v=20261004';
         frame.title = 'Admin';
         document.body.className = 'view-admin';
       } else if (view === 'markdown-import') {
-        frame.src = 'modules/markdown-import.html';
+        frame.src = 'modules/markdown-import.html?v=20261004';
         frame.title = 'Markdown-Import';
         document.body.className = 'view-markdown-import';
       }
@@ -176,8 +176,8 @@
     async function testApi() {
       const status = document.getElementById('statusText');
       try {
-        const match = document.cookie.match(/(^| )hotlinkstuff_pw=([^;]+)/);
-        const pw = match ? decodeURIComponent(match[2]) : '';
+        const cookie = document.cookie.split('; ').find(value => value.startsWith('hotlinkstuff_pw='));
+        const pw = cookie ? decodeURIComponent(cookie.slice('hotlinkstuff_pw='.length)) : '';
         if (!pw) {
           status.textContent = 'Anmeldung erforderlich';
           return;
