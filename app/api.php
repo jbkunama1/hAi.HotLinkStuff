@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+session_start();
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
@@ -24,7 +25,10 @@ $action = $input['action'] ?? '';
 $password = $input['password'] ?? '';
 $correctPassword = getenv('APP_PASSWORD') ?: 'hotstuff';
 
-if ($password !== $correctPassword) {
+// The login page already establishes this same-origin session. Use it as the
+// primary browser auth path and keep the password field for API clients.
+$isAuthenticated = !empty($_SESSION['hotlinkstuff_authenticated']);
+if (!$isAuthenticated && !hash_equals($correctPassword, (string)$password)) {
     echo json_encode(['success' => false, 'message' => 'Falsches Passwort']);
     exit;
 }
