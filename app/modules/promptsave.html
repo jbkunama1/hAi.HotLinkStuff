@@ -670,11 +670,11 @@
   </div>
 
   <script>
-    const API_URL = '../api.php';
+    const API_URL = new URL('../api.php', window.location.href).toString();
 
     function getCookie(name) {
-      const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return m ? decodeURIComponent(m[2]) : '';
+      const cookie = document.cookie.split('; ').find(value => value.startsWith(`${name}=`));
+      return cookie ? decodeURIComponent(cookie.slice(name.length + 1)) : '';
     }
     const apiPassword = getCookie('hotlinkstuff_pw');
 
