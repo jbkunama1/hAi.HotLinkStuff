@@ -33,6 +33,13 @@ function jsonResponse(array $data, int $status = 200): void {
     exit;
 }
 
+function ensureColumn(PDO $db, string $table, string $column, string $definition): void {
+    $columns = $db->query("PRAGMA table_info(" . $table . ")")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array($column, $columns, true)) {
+        $db->exec("ALTER TABLE " . $table . " ADD COLUMN " . $column . " " . $definition);
+    }
+}
+
 function getHotstuffDb(): PDO {
     $dbFile = '/var/www/data/heisser-scheiss.db';
     $db = new PDO('sqlite:' . $dbFile);
@@ -47,6 +54,13 @@ function getHotstuffDb(): PDO {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
     )");
+    ensureColumn($db, 'items', 'title', 'TEXT');
+    ensureColumn($db, 'items', 'category', 'TEXT');
+    ensureColumn($db, 'items', 'content', 'TEXT');
+    ensureColumn($db, 'items', 'link', 'TEXT');
+    ensureColumn($db, 'items', 'image', 'TEXT');
+    ensureColumn($db, 'items', 'created_at', 'TEXT');
+    ensureColumn($db, 'items', 'updated_at', 'TEXT');
     return $db;
 }
 
@@ -65,6 +79,13 @@ function getPromptsDb(): PDO {
         created_timestamp INTEGER NOT NULL,
         updated_timestamp INTEGER NOT NULL
     )");
+    ensureColumn($db, 'prompts', 'title', 'TEXT');
+    ensureColumn($db, 'prompts', 'content', 'TEXT');
+    ensureColumn($db, 'prompts', 'category', 'TEXT');
+    ensureColumn($db, 'prompts', 'created_at', 'TEXT');
+    ensureColumn($db, 'prompts', 'updated_at', 'TEXT');
+    ensureColumn($db, 'prompts', 'created_timestamp', 'INTEGER');
+    ensureColumn($db, 'prompts', 'updated_timestamp', 'INTEGER');
     return $db;
 }
 
