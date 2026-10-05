@@ -715,7 +715,13 @@
           ...payload
         })
       });
-      const result = await response.json().catch(() => ({}));
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error(`Ungültige API-Antwort (HTTP ${response.status})`);
+      }
       if (!response.ok) throw new Error(result.message || `HTTP ${response.status}`);
       if (!result || result.success !== true || !Array.isArray(result.prompts)) {
         throw new Error(result.message || 'Ungültige API-Antwort für PromptSave');
@@ -998,12 +1004,8 @@
       if (copyId) copyPrompt(copyId);
     });
 
-    if (!apiPassword) {
-      setStatus(false, 'Kein Passwort – bitte über die Login-Seite anmelden.');
-    } else {
-      setStatus(false, 'Verbindung wird geprüft ...');
-      loadPrompts().catch(err => setStatus(false, err.message || 'Fehler beim Laden'));
-    }
+    setStatus(false, 'Verbindung wird geprüft ...');
+    loadPrompts().catch(err => setStatus(false, err.message || 'Fehler beim Laden'));
   </script>
 </body>
 </html>

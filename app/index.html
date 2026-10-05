@@ -191,7 +191,13 @@
             password: pw
           })
         });
-        const data = await res.json().catch(() => ({}));
+        const responseText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Ungültige API-Antwort (HTTP ${res.status})`);
+        }
         if (!res.ok || !data.success) throw new Error(data.message || `HTTP ${res.status}`);
         status.textContent = 'Verbindung OK';
         status.style.color = '#22c55e';
