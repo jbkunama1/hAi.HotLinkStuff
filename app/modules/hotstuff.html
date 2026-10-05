@@ -1028,12 +1028,8 @@
       if (deleteId) deleteItem(deleteId);
     });
 
-    if (!apiPassword) {
-      setStatus(false, 'Kein Passwort – bitte über die Login-Seite anmelden.');
-    } else {
-      setStatus(false, 'Verbindung wird geprüft ...');
-      loadItems().catch(err => setStatus(false, err.message || 'Fehler beim Laden'));
-    }
+    setStatus(false, 'Verbindung wird geprüft ...');
+    loadItems().catch(err => setStatus(false, err.message || 'Fehler beim Laden'));
   </script>
 </body>
 </html>
