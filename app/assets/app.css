@@ -491,7 +491,7 @@ body.view-promptsave .shell-brand-mark {
   }
 
   .shell-status {
-    display: none;
+    display: block;
   }
 
   .shell-actions {

@@ -603,6 +603,7 @@
           <p>Prompts sammeln, suchen, importieren und exportieren.</p>
         </div>
       </div>
+      <div class="status" id="statusText"><span class="dot error" id="statusDot"></span>Verbindung wird geprüft ...</div>
     </section>
 
     <section class="toolbar">
@@ -732,6 +733,7 @@
     function setStatus(ok, message) {
       statusDot.className = 'dot ' + (ok ? 'ok' : 'error');
       statusText.textContent = message;
+      window.parent?.postMessage({ type: 'database-status', ok, message }, '*');
     }
 
     async function loadPrompts() {
