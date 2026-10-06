@@ -69,6 +69,24 @@ for database in /var/www/data/heisser-scheiss.db /var/www/data/prompts.db; do
         echo $pdo->query("PRAGMA integrity_check")->fetchColumn();
       ' "$database")"
       log "$name: SQLite-Integrität: $integrity"
+      php -r '
+        $pdo = new PDO("sqlite:" . $argv[1]);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $tables = $pdo->query("SELECT name FROM sqlite_master WHERE type = \"table\" AND name NOT LIKE \"sqlite_%\" ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
+        if (!$tables) {
+            echo "[startup] " . basename($argv[1]) . ": Tabellen: keine\n";
+            exit;
+        }
+        foreach ($tables as $table) {
+            $quoted = "\"" . str_replace("\"", "\"\"", $table) . "\"";
+            $count = $pdo->query("SELECT COUNT(*) FROM " . $quoted)->fetchColumn();
+            echo "[startup] " . basename($argv[1]) . ": Tabelle " . $table . ", Zeilen " . $count . "\n";
+        }
+        $expected = basename($argv[1]) === "heisser-scheiss.db" ? "items" : "prompts";
+        if (!in_array($expected, $tables, true)) {
+            echo "[startup] " . basename($argv[1]) . ": WARNUNG - erwartete Tabelle " . $expected . " fehlt\n";
+        }
+      ' "$database"
     fi
   else
     log "$name: leer, Tabellen werden beim ersten API-Aufruf angelegt"
