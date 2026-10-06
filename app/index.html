@@ -19,7 +19,7 @@
         <div class="shell-brand-mark">🔥🧠</div>
         <h1 class="shell-brand-title">hAI.HotLinkStuff</h1>
         </div>
-        <div class="status shell-status" id="statusText">Verbinde ...</div>
+        <div class="status shell-status" id="statusText">Verbindung wird geprüft ...</div>
         <div class="shell-actions">
           <button class="shell-tab-pill shell-logout" id="logoutBtn" type="button">
             <span class="icon">↪</span><span>Abmelden</span>
@@ -90,6 +90,7 @@
     const menuOverlay = document.getElementById('menuOverlay');
     const logoutBtn = document.getElementById('logoutBtn');
     const menuLogoutBtn = document.getElementById('menuLogoutBtn');
+    const shellStatusText = document.getElementById('statusText');
 
     const tabButtons = Array.from(document.querySelectorAll('.shell-tab-pill[data-view]'));
     const menuLinks = Array.from(document.querySelectorAll('.shell-menu-link'));
@@ -235,6 +236,11 @@
 
     // Empfange shell-preferences vom Admin-Modul
     window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'database-status') {
+        shellStatusText.textContent = e.data.message;
+        shellStatusText.style.color = e.data.ok ? '#22c55e' : '#f87171';
+        return;
+      }
       if (e.data && e.data.type === 'shell-preferences') {
         const { mode, theme, cols } = e.data;
         localStorage.setItem('hotlinkstuff_mode', mode);

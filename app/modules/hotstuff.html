@@ -629,6 +629,7 @@
         <div class="brand-badge">🔥</div>
         <h1>HotStuff</h1>
       </div>
+      <div class="status" id="statusText">Verbindung wird geprüft ...</div>
     </section>
 
     <section class="toolbar">
@@ -757,6 +758,7 @@
       const statusText = document.getElementById('statusText');
       statusText.textContent = message;
       statusText.style.color = ok ? '#22c55e' : 'var(--muted)';
+      window.parent?.postMessage({ type: 'database-status', ok, message }, '*');
     }
 
     async function loadItems() {
