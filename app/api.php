@@ -65,7 +65,7 @@ function ensureColumn(PDO $db, string $table, string $column, string $definition
 }
 
 function getHotstuffDb(): PDO {
-    $dbFile = '/var/www/data/heisser-scheiss.db';
+    $dbFile = '/data/heisser-scheiss.db';
     $db = new PDO('sqlite:' . $dbFile);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec("CREATE TABLE IF NOT EXISTS items (
@@ -89,7 +89,7 @@ function getHotstuffDb(): PDO {
 }
 
 function getPromptsDb(): PDO {
-    $dbFile = '/var/www/data/prompts.db';
+    $dbFile = '/data/prompts.db';
     $db = new PDO('sqlite:' . $dbFile);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec("CREATE TABLE IF NOT EXISTS prompts (
