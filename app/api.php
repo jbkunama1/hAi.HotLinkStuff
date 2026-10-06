@@ -180,7 +180,12 @@ function handlePrompts(string $action, array $input, PDO $db): void {
             $stmt = $db->query("SELECT * FROM prompts ORDER BY created_timestamp DESC");
             $prompts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("[api] request={$requestId} prompts rows=" . count($prompts));
-            jsonResponse(['success' => true, 'prompts' => $prompts]);
+            jsonResponse([
+                'success' => true,
+                'prompts' => $prompts,
+                'count' => count($prompts),
+                'database' => 'prompts.db'
+            ]);
         case 'create':
             $prompt = $input['prompt'] ?? [];
             $now = date('Y-m-d H:i:s');
