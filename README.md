@@ -147,6 +147,20 @@ data/prompts.db
 
 Per Portainer oder lokal mit Docker Compose/Stack.
 
+Für einen direkten Docker-Compose-Deploy im Repository:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+`docker-compose.yml` verwendet standardmäßig `/data` als Host-Ordner für
+`heisser-scheiss.db` und `prompts.db`. Für einen anderen Speicherort:
+
+```bash
+DATA_PATH=/srv/hotlinkstuff/data APP_PASSWORD='dein-passwort' docker compose up -d
+```
+
 ---
 
 ## 🐳 Portainer / Docker
