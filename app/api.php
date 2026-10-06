@@ -24,6 +24,15 @@ $resource = $input['resource'] ?? '';
 $action = $input['action'] ?? '';
 $password = $input['password'] ?? '';
 $correctPassword = getenv('APP_PASSWORD') ?: 'hotstuff';
+$requestId = bin2hex(random_bytes(4));
+
+error_log(sprintf(
+    '[api] request=%s resource=%s action=%s path=%s',
+    $requestId,
+    (string)$resource,
+    (string)$action,
+    $_SERVER['REQUEST_URI'] ?? 'unknown'
+));
 
 // The login page already establishes this same-origin session. Use it as the
 // primary browser auth path and keep the password field for API clients.
@@ -109,12 +118,15 @@ function generateUuid(): string {
 }
 
 function handleItems(string $action, array $input, PDO $db): void {
+    global $requestId;
     switch ($action) {
         case 'test':
             jsonResponse(['success' => true, 'message' => 'Items-Verbindung OK']);
         case 'getAll':
             $stmt = $db->query("SELECT * FROM items ORDER BY created_at DESC");
-            jsonResponse(['success' => true, 'items' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("[api] request={$requestId} items rows=" . count($items));
+            jsonResponse(['success' => true, 'items' => $items]);
         case 'create':
             $item = $input['item'] ?? [];
             $now = date('Y-m-d H:i:s');
@@ -155,12 +167,15 @@ function handleItems(string $action, array $input, PDO $db): void {
 }
 
 function handlePrompts(string $action, array $input, PDO $db): void {
+    global $requestId;
     switch ($action) {
         case 'test':
             jsonResponse(['success' => true, 'message' => 'Prompts-Verbindung OK']);
         case 'getAll':
             $stmt = $db->query("SELECT * FROM prompts ORDER BY created_timestamp DESC");
-            jsonResponse(['success' => true, 'prompts' => $stmt->fetchAll(PDO::FETCH_ASSOC)]);
+            $prompts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("[api] request={$requestId} prompts rows=" . count($prompts));
+            jsonResponse(['success' => true, 'prompts' => $prompts]);
         case 'create':
             $prompt = $input['prompt'] ?? [];
             $now = date('Y-m-d H:i:s');
