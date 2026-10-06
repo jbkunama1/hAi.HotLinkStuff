@@ -126,7 +126,12 @@ function handleItems(string $action, array $input, PDO $db): void {
             $stmt = $db->query("SELECT * FROM items ORDER BY created_at DESC");
             $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("[api] request={$requestId} items rows=" . count($items));
-            jsonResponse(['success' => true, 'items' => $items]);
+            jsonResponse([
+                'success' => true,
+                'items' => $items,
+                'count' => count($items),
+                'database' => 'heisser-scheiss.db'
+            ]);
         case 'create':
             $item = $input['item'] ?? [];
             $now = date('Y-m-d H:i:s');
