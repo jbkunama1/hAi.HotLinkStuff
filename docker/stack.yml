@@ -12,3 +12,10 @@ services:
     volumes:
       # Set DATA_PATH to the host folder containing the SQLite files.
       - ${DATA_PATH:-/data}:/var/www/data
+    networks:
+      - highfishNetwork
+
+networks:
+  highfishNetwork:
+    external: true
+    name: highfishNetwork

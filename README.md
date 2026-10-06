@@ -150,6 +150,7 @@ Per Portainer oder lokal mit Docker Compose/Stack.
 Für einen direkten Docker-Compose-Deploy im Repository:
 
 ```bash
+docker network create highfishNetwork
 docker compose pull
 docker compose up -d
 ```
@@ -186,6 +187,8 @@ volumes:
 ```
 
 `DATA_PATH` muss in Portainer auf einen absoluten, beschreibbaren Host-Pfad zeigen.
+Das Deployment verwendet das externe Docker-Netzwerk `highfishNetwork`. Dieses
+Netzwerk muss vor dem Start einmalig vorhanden sein.
 
 ---
 
