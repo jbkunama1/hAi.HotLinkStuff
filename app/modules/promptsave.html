@@ -609,18 +609,6 @@
     <section class="toolbar">
       <div class="toolbar-row">
         <button class="btn primary" id="newBtn">Neuer Prompt</button>
-        <button class="btn secondary" id="exportBtn">CSV exportieren</button>
-        <div class="theme-controls">
-          <button class="btn secondary" id="modeToggleBtn" type="button">☀️ Hell</button>
-          <select id="themeSelect" class="theme-select" aria-label="Theme wählen">
-            <option value="frost">❄️ Frost</option>
-            <option value="mint">🌿 Mint</option>
-            <option value="sunset">🌅 Sunset</option>
-            <option value="ember">🔥 Ember</option>
-            <option value="ocean">🌊 Ocean</option>
-            <option value="violet">🔮 Violet</option>
-          </select>
-        </div>
       </div>
       <div class="toolbar-grid">
         <input id="searchInput" class="search" type="text" placeholder="Suchen nach Titel oder Inhalt ..." />
@@ -630,10 +618,6 @@
           <option value="chatgpt">chatgpt</option>
           <option value="general">general</option>
         </select>
-      </div>
-      <div class="toolbar-row">
-        <button class="btn secondary" id="gridViewBtn" type="button" data-view="grid">🪟 Grid</button>
-        <button class="btn secondary" id="listViewBtn" type="button" data-view="list">📄 Liste</button>
       </div>
     </section>
 
@@ -698,11 +682,6 @@
     const contentInput = document.getElementById('contentInput');
     const csvInput = document.getElementById('csvInput');
     const importMessage = document.getElementById('importMessage');
-    const modeToggleBtn = document.getElementById('modeToggleBtn');
-    const themeSelect = document.getElementById('themeSelect');
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const listViewBtn = document.getElementById('listViewBtn');
-
     async function apiRequest(action, payload = {}) {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -776,15 +755,11 @@
     function applyThemeSettings(mode, theme) {
       document.body.dataset.mode = mode;
       document.body.dataset.theme = theme;
-      modeToggleBtn.textContent = mode === 'dark' ? '☀️ Hell' : '🌙 Dunkel';
-      themeSelect.value = theme;
     }
 
     function applyViewMode(mode) {
       localStorage.setItem(VIEW_MODE_KEY, mode);
       renderPrompts(); // Re-render to apply class
-      gridViewBtn.classList.toggle('active', mode === 'grid');
-      listViewBtn.classList.toggle('active', mode === 'list');
     }
 
     function applyColsSetting(cols) {
@@ -800,10 +775,6 @@
       else if (cols === '1') classes.push('cols-1');
       else if (cols === '2') classes.push('cols-2');
       return classes.join(' ');
-    }
-
-    function notifyShell() {
-      window.parent?.postMessage({ type: 'module-preferences' }, '*');
     }
 
     function initThemeSettings() {
@@ -920,30 +891,6 @@
       await loadPrompts();
     }
 
-    async function exportCsv() {
-      const result = await apiRequest('exportCsv');
-      if (!result.success) {
-        alert(result.message || 'CSV-Export fehlgeschlagen');
-        return;
-      }
-      const rows = result.rows || [];
-      const csv = ['title,content,category']
-        .concat(rows.map(r => [r.title, r.content, r.category].map(csvEscape).join(',')))
-        .join('\n');
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'prompts-export.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function csvEscape(value) {
-      const text = String(value ?? '');
-      return '"' + text.replace(/"/g, '""') + '"';
-    }
-
     async function copyPrompt(id) {
       const prompt = prompts.find(x => String(x.id) === String(id));
       if (!prompt) return;
@@ -959,23 +906,6 @@
     document.getElementById('closeModalBtn').addEventListener('click', closeModal);
     document.getElementById('cancelBtn').addEventListener('click', closeModal);
     document.getElementById('saveBtn').addEventListener('click', savePrompt);
-    document.getElementById('exportBtn').addEventListener('click', exportCsv);
-    modeToggleBtn.addEventListener('click', () => {
-      const nextMode = document.body.dataset.mode === 'dark' ? 'light' : 'dark';
-      applyThemeSettings(nextMode, themeSelect.value);
-      localStorage.setItem(THEME_MODE_KEY, nextMode);
-      localStorage.setItem('hotlinkstuff_mode', nextMode);
-      notifyShell();
-    });
-    themeSelect.addEventListener('change', () => {
-      const mode = document.body.dataset.mode || 'dark';
-      applyThemeSettings(mode, themeSelect.value);
-      localStorage.setItem(THEME_NAME_KEY, themeSelect.value);
-      localStorage.setItem('hotlinkstuff_theme', themeSelect.value);
-      notifyShell();
-    });
-    gridViewBtn.addEventListener('click', () => applyViewMode('grid'));
-    listViewBtn.addEventListener('click', () => applyViewMode('list'));
     searchInput.addEventListener('input', renderPrompts);
     categoryFilter.addEventListener('change', renderPrompts);
 

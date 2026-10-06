@@ -103,6 +103,13 @@
         <option value="light">☀️ Hell</option>
             </select>
           </div>
+          <div>
+            <label for="adminPromptsaveViewSelect">PromptSave-Ansicht</label>
+            <select id="adminPromptsaveViewSelect">
+            <option value="grid">🪟 Grid</option>
+            <option value="list">📄 Liste</option>
+            </select>
+          </div>
         </div>
         <div class="button-row" style="margin-top: 1rem;">
           <button id="savePreferences">Einstellungen speichern</button>
@@ -116,6 +123,7 @@
         <div class="button-row">
           <button id="exportHotstuffBtn" type="button">HotStuff JSON</button>
           <button id="exportPromptsaveBtn" type="button">PromptSave JSON</button>
+          <button id="exportPromptsaveCsvBtn" type="button">PromptSave CSV</button>
         </div>
         <span id="exportStatus" style="display: none; color: #24d1c4;"></span>
       </div>
@@ -135,17 +143,20 @@
     const adminThemeSelect = document.getElementById('adminThemeSelect');
     const adminLayoutSelect = document.getElementById('adminLayoutSelect');
     const adminModeSelect = document.getElementById('adminModeSelect');
+    const adminPromptsaveViewSelect = document.getElementById('adminPromptsaveViewSelect');
     const savePreferences = document.getElementById('savePreferences');
     const saveStatus = document.getElementById('saveStatus');
 
     adminThemeSelect.value = localStorage.getItem('hotlinkstuff_theme') || 'cloud';
     adminLayoutSelect.value = localStorage.getItem('hotlinkstuff_cols') || '3';
     adminModeSelect.value = localStorage.getItem('hotlinkstuff_mode') || 'dark';
+    adminPromptsaveViewSelect.value = localStorage.getItem('promptsave_view_mode') || 'grid';
 
     savePreferences.addEventListener('click', () => {
       localStorage.setItem('hotlinkstuff_theme', adminThemeSelect.value);
       localStorage.setItem('hotlinkstuff_cols', adminLayoutSelect.value);
       localStorage.setItem('hotlinkstuff_mode', adminModeSelect.value);
+      localStorage.setItem('promptsave_view_mode', adminPromptsaveViewSelect.value);
       
       saveStatus.style.display = 'inline';
       setTimeout(() => { saveStatus.style.display = 'none'; }, 2000);
@@ -158,23 +169,81 @@
       }, '*');
     });
 
-        // Export buttons - send message to specific module iframe
+        const apiPassword = document.cookie.split('; ')
+          .find(value => value.startsWith('hotlinkstuff_pw='))
+          ?.slice('hotlinkstuff_pw='.length) || '';
         const exportHotstuffBtn = document.getElementById('exportHotstuffBtn');
         const exportPromptsaveBtn = document.getElementById('exportPromptsaveBtn');
+        const exportPromptsaveCsvBtn = document.getElementById('exportPromptsaveCsvBtn');
         const exportStatus = document.getElementById('exportStatus');
 
-        function triggerExport(module, label) {
-          const frame = window.parent.document.getElementById('contentFrame');
-          if (frame && frame.contentWindow) {
-            frame.contentWindow.postMessage({ type: 'export-json', module }, '*');
-            exportStatus.textContent = `${label} Export gestartet...`;
-            exportStatus.style.display = 'inline';
-            setTimeout(() => { exportStatus.style.display = 'none'; }, 3000);
+        async function fetchExportData(resource) {
+          const response = await fetch('../api.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              resource,
+              action: 'getAll',
+              password: decodeURIComponent(apiPassword)
+            })
+          });
+          const result = await response.json();
+          if (!response.ok || result.success !== true) {
+            throw new Error(result.message || `HTTP ${response.status}`);
           }
+          return result;
         }
 
-        exportHotstuffBtn.addEventListener('click', () => triggerExport('hotstuff', 'HotStuff'));
-        exportPromptsaveBtn.addEventListener('click', () => triggerExport('promptsave', 'PromptSave'));
+        function downloadJson(filename, data) {
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+
+        function csvEscape(value) {
+          return `"${String(value ?? '').replace(/"/g, '""')}"`;
+        }
+
+        async function triggerExport(resource, label, format = 'json') {
+          try {
+            const result = await fetchExportData(resource);
+            if (format === 'csv') {
+              const csv = ['title,content,category']
+                .concat((result.prompts || []).map(row =>
+                  [row.title, row.content, row.category].map(csvEscape).join(',')
+                ))
+                .join('\n');
+              const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'prompts-export.csv';
+              link.click();
+              URL.revokeObjectURL(url);
+            } else {
+              const key = resource === 'items' ? 'items' : 'prompts';
+              downloadJson(
+                `${resource === 'items' ? 'hotstuff' : 'prompts'}-export.json`,
+                result[key] || []
+              );
+            }
+            exportStatus.textContent = `${label} Export erstellt.`;
+          } catch (error) {
+            exportStatus.textContent = `${label}-Export fehlgeschlagen: ${error.message}`;
+          }
+          exportStatus.style.display = 'inline';
+          setTimeout(() => { exportStatus.style.display = 'none'; }, 4000);
+        }
+
+        exportHotstuffBtn.addEventListener('click', () => triggerExport('items', 'HotStuff'));
+        exportPromptsaveBtn.addEventListener('click', () => triggerExport('prompts', 'PromptSave'));
+        exportPromptsaveCsvBtn.addEventListener('click', () => triggerExport('prompts', 'PromptSave CSV', 'csv'));
   </script>
 </body>
 </html>
