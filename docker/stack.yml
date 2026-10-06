@@ -11,7 +11,7 @@ services:
       APP_PASSWORD: ${APP_PASSWORD}
     volumes:
       # Set DATA_PATH to the host folder containing the SQLite files.
-      - ${DATA_PATH:-/data}:/var/www/data
+      - ${DATA_PATH:-/data}:/data
     networks:
       - highfishNetwork
 

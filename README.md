@@ -183,7 +183,7 @@ Beispiel:
 environment:
   APP_PASSWORD: ${APP_PASSWORD:-hotstuff}
 volumes:
-  - ${DATA_PATH:-/data}:/var/www/data
+  - ${DATA_PATH:-/data}:/data
 ```
 
 `DATA_PATH` muss in Portainer auf einen absoluten, beschreibbaren Host-Pfad zeigen.

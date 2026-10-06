@@ -766,7 +766,10 @@
       if (!result.success) throw new Error(result.message || 'Laden fehlgeschlagen');
       items = sortNewestFirst(result.items || []);
       renderItems();
-      setStatus(true, 'Verbindung OK');
+      setStatus(true, `Verbindung OK · ${result.count ?? items.length} Einträge`);
+      if (!items.length) {
+        throw new Error(`HotStuff-Datenbank ${result.database || 'heisser-scheiss.db'} liefert 0 Einträge`);
+      }
     }
 
     function parseDateValue(value) {

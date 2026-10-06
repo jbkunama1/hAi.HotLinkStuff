@@ -65,7 +65,7 @@ function ensureColumn(PDO $db, string $table, string $column, string $definition
 }
 
 function getHotstuffDb(): PDO {
-    $dbFile = '/var/www/data/heisser-scheiss.db';
+    $dbFile = '/data/heisser-scheiss.db';
     $db = new PDO('sqlite:' . $dbFile);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec("CREATE TABLE IF NOT EXISTS items (
@@ -89,7 +89,7 @@ function getHotstuffDb(): PDO {
 }
 
 function getPromptsDb(): PDO {
-    $dbFile = '/var/www/data/prompts.db';
+    $dbFile = '/data/prompts.db';
     $db = new PDO('sqlite:' . $dbFile);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec("CREATE TABLE IF NOT EXISTS prompts (
@@ -126,7 +126,12 @@ function handleItems(string $action, array $input, PDO $db): void {
             $stmt = $db->query("SELECT * FROM items ORDER BY created_at DESC");
             $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("[api] request={$requestId} items rows=" . count($items));
-            jsonResponse(['success' => true, 'items' => $items]);
+            jsonResponse([
+                'success' => true,
+                'items' => $items,
+                'count' => count($items),
+                'database' => 'heisser-scheiss.db'
+            ]);
         case 'create':
             $item = $input['item'] ?? [];
             $now = date('Y-m-d H:i:s');

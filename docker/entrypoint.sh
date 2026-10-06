@@ -26,17 +26,17 @@ else
   log "WARNUNG: PHP-Erweiterung sqlite3 fehlt"
 fi
 
-mkdir -p /var/www/data
-log "Datenverzeichnis: /var/www/data"
+mkdir -p /data
+log "Datenverzeichnis: /data"
 log "Datenverzeichnis vor Rechteanpassung:"
-ls -lad /var/www/data
-find /var/www/data -maxdepth 1 -type f -printf '[startup] Datei: %f (%s Bytes, %u:%g, %m)\n' | sort || true
+ls -lad /data
+find /data -maxdepth 1 -type f -printf '[startup] Datei: %f (%s Bytes, %u:%g, %m)\n' | sort || true
 
-chown -R www-data:www-data /var/www/data
+chown -R www-data:www-data /data
 log "Datenverzeichnis nach Rechteanpassung:"
-ls -lad /var/www/data
+ls -lad /data
 
-if [ -w /var/www/data ]; then
+if [ -w /data ]; then
   log "Datenverzeichnis beschreibbar: ja"
 else
   log "FEHLER: Datenverzeichnis nicht beschreibbar"
@@ -44,7 +44,7 @@ else
 fi
 
 # Keep a backup when a bind-mounted database is truncated or not SQLite.
-for database in /var/www/data/heisser-scheiss.db /var/www/data/prompts.db; do
+for database in /data/heisser-scheiss.db /data/prompts.db; do
   name="$(basename "$database")"
   if [ ! -e "$database" ]; then
     log "$name: nicht vorhanden, wird beim ersten API-Aufruf angelegt"
