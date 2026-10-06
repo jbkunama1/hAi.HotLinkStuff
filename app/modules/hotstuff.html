@@ -804,8 +804,6 @@
     function applyThemeSettings(mode, theme) {
       document.body.dataset.mode = mode;
       document.body.dataset.theme = theme;
-      modeToggleBtn.textContent = mode === 'dark' ? '☀️ Hell' : '🌙 Dunkel';
-      themeSelect.value = theme;
     }
 
     function applyViewMode(mode) {
@@ -837,10 +835,6 @@
       applyThemeSettings(savedMode, savedTheme);
       applyViewMode(savedViewMode);
       if (localStorage.getItem('hotlinkstuff_cols')) renderItems();
-    }
-
-    function notifyShell() {
-      window.parent?.postMessage({ type: 'module-preferences' }, '*');
     }
 
     function getFilteredItems() {
